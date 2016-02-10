@@ -7,7 +7,7 @@ tape.test('If no token return 401', function(t) {
 
     let authPromise = auth.authenticate();
 
-    authPromise.then({
+    authPromise.then(function(decoded) {
         t.fail('didn\'t throw error');
         t.end();
     }).catch(function(err) {
@@ -21,7 +21,7 @@ tape.test('If invalid token return 401', function(t) {
 
     let authPromise = auth.authenticate('foo');
 
-    authPromise.then({
+    authPromise.then(function(decoded) {
         t.fail('didn\'t throw error');
         t.end();
     }).catch(function(err) {
