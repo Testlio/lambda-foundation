@@ -7,12 +7,8 @@ const Error = require('../error-reporting/error').error;
 module.exports = {
 
     validateToken: function(token) {
-        console.log('tokensdfsdfsdfdsffds222');
         return new Promise(function(resolve, reject) {
-            console.log(token);
-            console.log('tokensdfsdfsdfdsffds');
             if (!token) {
-                console.log('ififs');
                 return reject(Error('401', 'Invalid token'));
             }
 
@@ -31,9 +27,11 @@ module.exports = {
         });
     },
 
-    hasScope: function(token, requiredScopes) {
+    isAuthorized: function(scopes, requiredScopes) {
+        let rule = requiredScopes.rule ? requiredScopes.rule : this.Rule.All;
+
         let required = requiredScopes ? requiredScopes.scope : null;
-        let present = token ? token.scope : null;
+        let present = scopes ? scopes : null;
 
         if (required && required.length > 0) {
             if (!present) {
@@ -47,9 +45,10 @@ module.exports = {
                 return present.indexOf(item) != -1;
             });
 
-            if (requiredScopes.requireAll && filtered.length != required.length) {
+            if (rule === this.Rule.All && filtered.length != required.length) {
                 return false;
-            } else if (filtered.length == 0) {
+            }
+            if (rule === this.Rule.None && filtered.length > 0) {
                 return false;
             }
         }
@@ -62,11 +61,11 @@ module.exports = {
         Client: 'client',
         QA: 'qa_manager',
         Admin: 'admin'
+    },
+
+    Rule: {
+        Any: 'any',
+        None: 'none',
+        All: 'all'
     }
 };
-
-if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function(prefix) {
-        return this.indexOf(prefix, 0) === 0;
-    };
-}

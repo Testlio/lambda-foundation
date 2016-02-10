@@ -43,3 +43,55 @@ tape.test('If valid token return decoded token', function(t) {
         t.end();
     })
 });
+
+tape.test('if all roles not present return false', function(t) {
+
+    let result = auth.isAuthorized([], {
+        scope: [auth.Scope.Client, auth.Scope.Admin]
+    });
+
+    t.notOk(result, 'false expected');
+    t.end();
+});
+
+tape.test('if all roles are present then return true', function(t) {
+
+    let authPromise = auth.isAuthorized(['client', 'admin'], {
+        scope: [auth.Scope.Client, auth.Scope.Admin]
+    });
+
+    t.ok(authPromise, 'true expected');
+    t.end();
+});
+
+tape.test('if all roles are present then return true', function(t) {
+
+    let authPromise = auth.isAuthorized(['admin'], {
+        scope: [auth.Scope.Client, auth.Scope.Admin]
+    });
+
+    t.notOk(authPromise, 'true expected');
+    t.end();
+});
+
+tape.test('if at least one role is present with Any rule then return true', function(t) {
+
+    let authPromise = auth.isAuthorized(['admin', 'client'], {
+        scope: [auth.Scope.Admin],
+        rule: auth.Rule.Any
+    });
+
+    t.ok(authPromise, 'true expected');
+    t.end();
+});
+
+tape.test('if at least one role is present with None rule then return false', function(t) {
+
+    let authPromise = auth.isAuthorized(['admin', 'client'], {
+        scope: [auth.Scope.Admin],
+        rule: auth.Rule.None
+    });
+
+    t.notOk(authPromise, 'false expected');
+    t.end();
+});
