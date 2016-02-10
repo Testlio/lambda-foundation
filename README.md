@@ -88,7 +88,7 @@ For example, a service may have a resource `pet` and expose methods for obtainin
 }
 ```
 
-Responses to further methods/endpoints can also include HREFs to themselves other resources:
+Responses to further methods/endpoints can also include HREFs to themselves and/or other resources:
 
 ```json
 {
