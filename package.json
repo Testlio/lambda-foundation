@@ -1,0 +1,23 @@
+{
+  "name": "@testlio/lambda-foundation",
+  "version": "1.0.0",
+  "description": "Common helpers for Lambda backed microservices",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://henrinormak@github.com/Testlio/lambda-foundation.git"
+  },
+  "keywords": [
+    "lambda",
+    "microservice"
+  ],
+  "author": "dev@testlio.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Testlio/lambda-foundation/issues"
+  },
+  "homepage": "https://github.com/Testlio/lambda-foundation#readme"
+}
