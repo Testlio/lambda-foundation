@@ -74,7 +74,97 @@ function handler(event, context) {
 
 ### Service Discovery
 
-TBD
+At the root of every microservice should be a discovery method for publicly accessible resources. Generally the structure of this discovery response is very similar between various services, which the Foundation aims to simplify. Furthermore, all services also rely on similar code for resolving/completing the HREFs present in the responses.
+
+For example, a service may have a resource `pet` and expose methods for obtaining all `pets` for a user or a specific `pet`. The discovery response would in that case be something along the lines of:
+
+```json
+{
+    "resources": {
+        "pets": {
+            "href": "http://host/service/version/pets"
+        }
+    }
+}
+```
+
+Responses to further methods/endpoints can also include HREFs to themselves other resources:
+
+```json
+{
+    "href": "http://host/service/version/pets/id",
+    "name": "Bob",
+    "type": "Dog"
+}
+```
+
+The `discovery` submodule of Lambda Foundation aims to help with both of these steps by reading a file from the service (`discovery.json`) that defines the resources. Nested resources are also allowed (paths of resulting HREFs are assumed to nest). Notice this is very similar to the response format, but doesn't include the HREFs in the definition (as those are generated dynamically). If a resource wishes to not have a HREF generated (it is not directly accessible and serves as a passthrough for its children for example), it can specify the `passthrough` flag as `true`.
+
+```json
+{
+    "resources": {
+        "pets": {},
+        "people": {
+            "passthrough": true,
+            "resources": {
+                "children": {},
+                "adults": {}
+            }
+        }
+    }
+}
+```
+
+This results in resolved resources:
+
+```json
+{
+    "resources": {
+        "pets": {
+            "href": "http://host/service/version/pets"
+        },
+        "people": {
+            "children": {
+                "href": "http://host/service/version/people/children"
+            },
+            "adults": {
+                "href": "http://host/service/version/people/adults"
+            }
+        }
+    }
+}
+```
+
+In code these generated resources can be accessed directly:
+
+```js
+var Discovery = require('@testlio/lambda-foundation').discovery;
+
+function handler(event, context) {
+    var resources = Discovery.resources;
+    context.succeed(resources);
+}
+```
+
+Discovery also helps with resolving HREFs for use in responses. This works hand in hand with Node.js's [URL module](https://nodejs.org/api/url.html).
+
+```js
+var Discovery = require('@testlio/lambda-foundation').discovery;
+var url = require('url');
+
+function handler(event, context) {
+    ...
+    // HREF for a specific pet
+    var href = url.resolve(Discovery.resources.pets.href, '/specific-pet-id');
+
+    // HREF for all pets (the top-level resource)
+    var generalHref = Discovery.resources.pets.href;
+
+    // HREF for a nested resource
+    var childrenHref = Discovery.resources.people.children.href;
+    ...
+}
+```
 
 ### Configuration
 
