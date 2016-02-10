@@ -72,6 +72,8 @@ function handler(event, context) {
 }
 ```
 
+_Note:_ The errors thrown by authentication start with either `401:` or `403:`, depending on the reason (not matching scope vs having an invalid token). This means the AWS Lambda function results in a string that matches the regex `4\\d{2}:.*`
+
 ### Service Discovery
 
 At the root of every microservice should be a discovery method for publicly accessible resources. Generally the structure of this discovery response is very similar between various services, which the Foundation aims to simplify. Furthermore, all services also rely on similar code for resolving/completing the HREFs present in the responses.
