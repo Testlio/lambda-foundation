@@ -189,4 +189,40 @@ function handler(event, context) {
 
 ### Error Reporting
 
-TBD
+Reporting errors from Lambda functions involves two steps, first the error has to be caught and reported, second the context should fail with the same error once the reporting code has finished. Foundation uses promises once again to offer error reporting facilities, which `context.fail` can then be chained into. At the moment the error reporting is synchronous (as a process), meaning once the promise resolves the error has been reported to the centralised system. This means a small overhead on Lambda invocations that result in an error. However, this may change in the future, into a system where errors are batched and propagated separately from the Lambda functions that reported them.
+
+The general error reporting function works as follows:
+
+```js
+var Error = require('@testlio/lambda-foundation').error;
+
+function handler(event, context) {
+    let work = ...// some promise
+
+    promise.then(context.done).catch(function (err) {
+        return Error.report(err).then(context.fail);
+    });
+}
+```
+
+All errors that don't start with the following pattern `\\d{3}:` are assumed to be internal errors and are transformed into errors that have `500: ` at the start of their `message`.
+
+The error submodule also aims to provide structure for errors used in Lambda functions. This is due to the way Lambda results are interpreted by [API Gateway](https://aws.amazon.com/api-gateway/), where the error is converted into a string, that in turn gets mapped to an HTTP response. Thus, a nice pattern is to provide the suggested status code as the first part of the error message, such as `500:` or `404:`. Such error messages can be created as follows:
+
+```js
+var Error = require('@testlio/lambda-foundation').error;
+
+function handler(event, context) {
+    let work = new Promise(function(resolve, reject) {
+        // Check some variable on event, which if not there, should result in a 400
+        if (!event.variable) {
+            return reject(new Error.error('400', 'Missing variable'));
+        }
+
+        // Everything is fine and work can continue
+        ...
+    }).catch(function(err) {
+        return Error.report(err).then(context.fail);
+    }).then(context.done);
+}
+```
