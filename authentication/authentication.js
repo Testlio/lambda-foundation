@@ -6,11 +6,13 @@ const Error = require('../error-reporting/error').error;
 
 module.exports = {
 
-    authenticate: function(token, requiredScopes) {
-
+    validateToken: function(token) {
+        console.log('tokensdfsdfsdfdsffds222');
         return new Promise(function(resolve, reject) {
-
-            if (!token || token.length ==  0) {
+            console.log(token);
+            console.log('tokensdfsdfsdfdsffds');
+            if (!token) {
+                console.log('ififs');
                 return reject(Error('401', 'Invalid token'));
             }
 
@@ -18,16 +20,14 @@ module.exports = {
                 token = token.substring(6).trim();
             }
 
-            let decoded;
             try {
-                decoded = jwt.verify(token, 'secret', {
+                const decoded = jwt.verify(token, 'secret', {
                     algorithms: ["HS256"]
                 });
+                resolve(decoded);
             } catch(err) {
                 return reject(Error('401', 'Invalid token'));
             }
-
-            resolve(decoded);
         });
     },
 
