@@ -4,7 +4,7 @@
   "description": "Common helpers for Lambda backed microservices",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tape test/*-test.js"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,13 @@
   "bugs": {
     "url": "https://github.com/Testlio/lambda-foundation/issues"
   },
-  "homepage": "https://github.com/Testlio/lambda-foundation#readme"
+  "homepage": "https://github.com/Testlio/lambda-foundation#readme",
+  "dependencies": {
+    "jsonwebtoken": "^5.4.1",
+    "promiscuous": "^0.6.0",
+    "raygun": "^0.8.5"
+  },
+  "devDependencies": {
+    "tape": "^4.4.0"
+  }
 }
