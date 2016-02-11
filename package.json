@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Testlio/lambda-foundation/issues"
   },
-  "homepage": "https://github.com/Testlio/lambda-foundation#readme"
+  "homepage": "https://github.com/Testlio/lambda-foundation#readme",
+  "dependencies": {
+    "lodash": "^4.3.0"
+  }
 }
