@@ -19,8 +19,15 @@
   "bugs": {
     "url": "https://github.com/Testlio/lambda-foundation/issues"
   },
+  "browserify": {
+    "transform": [
+      "./configuration/transform.js"
+    ]
+  },
   "homepage": "https://github.com/Testlio/lambda-foundation#readme",
   "dependencies": {
-    "lodash": "^4.3.0"
+    "falafel": "^1.2.0",
+    "lodash": "^4.3.0",
+    "through2": "^2.0.1"
   }
 }

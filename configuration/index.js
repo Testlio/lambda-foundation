@@ -1,9 +1,10 @@
 var _ = require('lodash');
-var path = require('path');
+var fs = require('fs');
 
-function loadDefaultConfig(rootDirectory) {
+function loadDefaultConfig() {
     try {
-        return require(path.resolve(rootDirectory, 'config/default.json'));
+        var path = path.resolve(process.cwd(), 'config/default.json');
+        return JSON.parse(fs.readFileSync(path));
     } catch (err) {
         // Ignore (this is so we don't have to dynamically check for file existance)
     }
@@ -11,16 +12,13 @@ function loadDefaultConfig(rootDirectory) {
     return {};
 }
 
-function loadEnvironmentConfig(environment, rootDirectory) {
-    if (["development", "production", "docker"].indexOf(environment) !== -1) {
-        try {
-            return require(path.resolve(rootDirectory, 'config/' + environment + '.json'));
-        } catch (err) {
-            // Ignore (this is so we don't have to dynamically check for file existance)
-        }
+function loadEnvironmentConfig(environment) {
+    try {
+        var path = path.resolve(process.cwd(), 'config/' + environment + '.json');
+        return JSON.parse(fs.readFileSync(path));
+    } catch (err) {
+        return {};
     }
-
-    return {};
 }
 
 function forOwnDeep(object, callback, prefix) {
@@ -35,9 +33,10 @@ function forOwnDeep(object, callback, prefix) {
     });
 }
 
-function loadEnvironmentVariablesConfig(rootDirectory) {
+function loadEnvironmentVariablesConfig() {
     try {
-        var envVarsMapping = require(path.resolve(rootDirectory, 'config/custom-environment-variables.json'));
+        var path = path.resolve(process.cwd(), 'config/custom-environment-variables.json');
+        var envVarsMapping = JSON.parse(fs.readFileSync(path));
         var envConfig = {};
 
         forOwnDeep(envVarsMapping, function(value, key) {
@@ -54,7 +53,7 @@ function loadEnvironmentVariablesConfig(rootDirectory) {
     return {};
 }
 
-module.exports = function(rootDirectory) {
+module.exports = function() {
     // Try deriving some common config attributes from the environment
     var config = {
         project: {
@@ -68,13 +67,15 @@ module.exports = function(rootDirectory) {
     };
 
     // Always load in default as our go-to fallback
-    var defaultConfig = loadDefaultConfig(rootDirectory);
+    var defaultConfig = loadDefaultConfig();
 
     // Load env specific conf
-    var environmentConfig = loadEnvironmentConfig(process.env.NODE_ENV || 'development', rootDirectory);
+    var environmentConfig = loadEnvironmentConfig(process.env.NODE_ENV || 'development');
 
     // Check if there are env vars that need to be mapped
-    var envVarsConfig = loadEnvironmentVariablesConfig(rootDirectory);
+    var envVarsConfig = loadEnvironmentVariablesConfig();
 
-    return _.merge({}, config, defaultConfig, environmentConfig, envVarsConfig);
+    console.log('Modified internal');
+    console.log('Configs', config, defaultConfig, environmentConfig, envVarsConfig);
+    return _.merge(config, defaultConfig, environmentConfig, envVarsConfig);
 };
