@@ -1,7 +1,7 @@
 "use strict";
 
 const tape = require('tape');
-const config = require('../configuration');
+const config = require('../lib/configuration');
 
 tape.test('Loading default configuration', function(t) {
     const resolvedConfig = config(__dirname + '/configs/1');
