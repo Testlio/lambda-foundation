@@ -9,7 +9,6 @@ function loadDefaultConfig(root) {
         const path = Path.resolve(root, 'default.json');
         return JSON.parse(fs.readFileSync(path));
     } catch (err) {
-        console.log(err);
         return {};
     }
 }
@@ -55,7 +54,7 @@ function loadEnvironmentVariablesConfig(root) {
 
 module.exports = function(root) {
     // Try deriving some common config attributes from the environment
-    var config = {
+    const config = {
         project: {
             name: process.env.AWS_PROJECT_NAME,
         },
@@ -67,12 +66,12 @@ module.exports = function(root) {
     };
 
     // Always load in default as our go-to fallback
-    var defaultConfig = loadDefaultConfig(root);
+    const defaultConfig = loadDefaultConfig(root);
 
     // Load env specific conf
-    var environmentConfig = loadEnvironmentConfig(process.env.NODE_ENV || 'development', root);
+    const environmentConfig = loadEnvironmentConfig(process.env.NODE_ENV || 'development', root);
 
     // Check if there are env vars that need to be mapped
-    var envVarsConfig = loadEnvironmentVariablesConfig(root);
+    const envVarsConfig = loadEnvironmentVariablesConfig(root);
     return _.merge(config, defaultConfig, environmentConfig, envVarsConfig);
 };
