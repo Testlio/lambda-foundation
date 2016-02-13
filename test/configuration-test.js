@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const tape = require('tape');
 const config = require('../lib/configuration');

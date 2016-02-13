@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const config = require('./lib/configuration');
 const path = require('path');
