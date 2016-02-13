@@ -1,6 +1,6 @@
 "use strict";
 
-const config = require('./configuration');
+const config = require('./lib/configuration');
 const path = require('path');
 
 module.exports = {
