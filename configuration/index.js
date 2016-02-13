@@ -6,10 +6,8 @@ function loadDefaultConfig() {
         var path = path.resolve(process.cwd(), 'config/default.json');
         return JSON.parse(fs.readFileSync(path));
     } catch (err) {
-        // Ignore (this is so we don't have to dynamically check for file existance)
+        return {};
     }
-
-    return {};
 }
 
 function loadEnvironmentConfig(environment) {
@@ -47,10 +45,8 @@ function loadEnvironmentVariablesConfig() {
 
         return envConfig;
     } catch (err) {
-        // Ignore (this is so we don't have to dynamically check for file existance)
+        return {};
     }
-
-    return {};
 }
 
 module.exports = function() {
@@ -74,8 +70,5 @@ module.exports = function() {
 
     // Check if there are env vars that need to be mapped
     var envVarsConfig = loadEnvironmentVariablesConfig();
-
-    console.log('Modified internal');
-    console.log('Configs', config, defaultConfig, environmentConfig, envVarsConfig);
     return _.merge(config, defaultConfig, environmentConfig, envVarsConfig);
 };
