@@ -1,18 +1,22 @@
-var _ = require('lodash');
-var fs = require('fs');
+"use strict";
 
-function loadDefaultConfig() {
+const _ = require('lodash');
+const fs = require('fs');
+const Path = require('path');
+
+function loadDefaultConfig(root) {
     try {
-        var path = path.resolve(process.cwd(), 'config/default.json');
+        const path = Path.resolve(root, 'default.json');
         return JSON.parse(fs.readFileSync(path));
     } catch (err) {
+        console.log(err);
         return {};
     }
 }
 
-function loadEnvironmentConfig(environment) {
+function loadEnvironmentConfig(environment, root) {
     try {
-        var path = path.resolve(process.cwd(), 'config/' + environment + '.json');
+        const path = Path.resolve(root, environment + '.json');
         return JSON.parse(fs.readFileSync(path));
     } catch (err) {
         return {};
@@ -31,11 +35,11 @@ function forOwnDeep(object, callback, prefix) {
     });
 }
 
-function loadEnvironmentVariablesConfig() {
+function loadEnvironmentVariablesConfig(root) {
     try {
-        var path = path.resolve(process.cwd(), 'config/custom-environment-variables.json');
-        var envVarsMapping = JSON.parse(fs.readFileSync(path));
-        var envConfig = {};
+        const path = Path.resolve(root, 'custom-environment-variables.json');
+        const envVarsMapping = JSON.parse(fs.readFileSync(path));
+        const envConfig = {};
 
         forOwnDeep(envVarsMapping, function(value, key) {
             if (process.env[value]) {
@@ -49,7 +53,7 @@ function loadEnvironmentVariablesConfig() {
     }
 }
 
-module.exports = function() {
+module.exports = function(root) {
     // Try deriving some common config attributes from the environment
     var config = {
         project: {
@@ -63,12 +67,12 @@ module.exports = function() {
     };
 
     // Always load in default as our go-to fallback
-    var defaultConfig = loadDefaultConfig();
+    var defaultConfig = loadDefaultConfig(root);
 
     // Load env specific conf
-    var environmentConfig = loadEnvironmentConfig(process.env.NODE_ENV || 'development');
+    var environmentConfig = loadEnvironmentConfig(process.env.NODE_ENV || 'development', root);
 
     // Check if there are env vars that need to be mapped
-    var envVarsConfig = loadEnvironmentVariablesConfig();
+    var envVarsConfig = loadEnvironmentVariablesConfig(root);
     return _.merge(config, defaultConfig, environmentConfig, envVarsConfig);
 };
