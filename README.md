@@ -174,7 +174,7 @@ As Lambda based services that are deployed using [lambda-tools](https://github.c
 
 This problem could be solved in multiple ways, for example the config package could be ignored by bundling and then separately included in the resulting zipped up Lambda function. However, there may exist services which don't care about configuration, or want to handle it without using the aforementioned config package. Thus, Lambda Foundation aims to provide a simpler, more browserify friendly configuration method, which also provides some out of the box values that Lambda functions are likely to care about.
 
-Configuration utilises a similar approach to the config package, leveraging files in the `config` directory. The biggest difference being that only a subset of the environments are covered (thus `require` statements can be made static). Currently supported environments are (case-insensitive): `development`, `production` and `docker`, for any other environment or keys not present in the configuration, `default` is used as a fallback. All environment mappings defined in `custom-environment-variables` are loaded at initialisation time to allow bundling.
+Configuration utilises a similar approach to the config package, leveraging files in the `config` directory. The biggest difference is in the way lambda-foundation configuration is bundled/built into a static file by browserify. As expected, configurations in the `config` directory are loaded based on the environment, with `default` used as a fallback. All environment mappings defined in `custom-environment-variables` are also loaded at initialisation time to allow bundling.
 
 ```js
 var Config = require('@testlio/lambda-foundation').configuration;
