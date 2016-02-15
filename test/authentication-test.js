@@ -1,5 +1,5 @@
 const tape = require('tape');
-const auth = require('../authentication/authentication');
+const auth = require('../lib/authentication');
 
 tape.test('If no token then return 401', function(t) {
 
@@ -168,7 +168,7 @@ tape.test('if valid token and invalid scope then false', function(t) {
         t.end();
     }).catch(function(err) {
         t.ok(err, 'error is returned');
-        t.equal('401', err.code);
+        t.equal('403', err.code);
         t.end();
     });
 });
