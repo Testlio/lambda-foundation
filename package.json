@@ -32,7 +32,10 @@
   "homepage": "https://github.com/Testlio/lambda-foundation#readme",
   "dependencies": {
     "falafel": "^1.2.0",
+    "jsonwebtoken": "^5.5.4",
     "lodash": "^4.3.0",
+    "promiscuous": "^0.6.0",
+    "raygun": "^0.8.5",
     "through2": "^2.0.1"
   },
   "devDependencies": {
