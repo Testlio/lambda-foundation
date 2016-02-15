@@ -1,10 +1,18 @@
 'use strict';
 
-const config = require('./lib/configuration');
-const auth = require('./lib/authentication');
 const path = require('path');
 
-module.exports = {
-    authentication: auth,
-    configuration: config(path.resolve(process.cwd(), 'config'))
-};
+const config = require('./lib/configuration')(path.resolve(process.cwd(), 'config'));
+const auth = require('./lib/authentication');
+const discovery = require('./lib/discovery');
+
+module.exports = function() {
+    // Create/read in a base HREF and resolve resources
+    const resources = discovery('', path.resolve(process.cwd(), 'discovery.json'));
+
+    return {
+        authentication: auth,
+        configuration: config,
+        discovery: resources
+    };
+}();
