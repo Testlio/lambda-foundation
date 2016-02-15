@@ -33,7 +33,7 @@
   "dependencies": {
     "falafel": "^1.2.0",
     "lodash": "^4.3.0",
-    "through2": "^2.0.1"
+    "through2": "^2.0.1",
     "jsonwebtoken": "^5.5.4",
     "promiscuous": "^0.6.0",
     "raygun": "^0.8.5"
