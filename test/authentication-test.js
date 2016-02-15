@@ -58,7 +58,7 @@ tape.test('If valid token with Bearer keyword then return decoded token', functi
 tape.test('if all roles not present with no rules then return false', function(t) {
 
     const result = auth.isAuthorized([], {
-        scope: [auth.scope.client, auth.scope.admin]
+        scope: [auth.SCOPE.CLIENT, auth.SCOPE.ADMIN]
     });
 
     t.notOk(result, 'false expected');
@@ -67,8 +67,8 @@ tape.test('if all roles not present with no rules then return false', function(t
 
 tape.test('if all roles are present with no rules then return true', function(t) {
 
-    const authPromise = auth.isAuthorized(['client', 'admin'], {
-        scope: [auth.scope.client, auth.scope.admin]
+    const authPromise = auth.isAuthorized([auth.SCOPE.CLIENT, auth.SCOPE.ADMIN], {
+        scope: [auth.SCOPE.CLIENT, auth.SCOPE.ADMIN]
     });
 
     t.ok(authPromise, 'true expected');
@@ -77,8 +77,8 @@ tape.test('if all roles are present with no rules then return true', function(t)
 
 tape.test('if all roles are not present with no rule then return false', function(t) {
 
-    const authPromise = auth.isAuthorized(['admin'], {
-        scope: [auth.scope.client, auth.scope.admin]
+    const authPromise = auth.isAuthorized([auth.SCOPE.ADMIN], {
+        scope: [auth.SCOPE.CLIENT, auth.SCOPE.ADMIN]
     });
 
     t.notOk(authPromise, 'true expected');
@@ -87,9 +87,9 @@ tape.test('if all roles are not present with no rule then return false', functio
 
 tape.test('if at least one role is present with Any rule then return true', function(t) {
 
-    const authPromise = auth.isAuthorized(['admin'], {
-        scope: [auth.scope.admin, auth.scope.client],
-        rule: auth.rule.any
+    const authPromise = auth.isAuthorized([auth.SCOPE.ADMIN], {
+        scope: [auth.SCOPE.ADMIN, auth.SCOPE.CLIENT],
+        rule: auth.RULE.ANY
     });
 
     t.ok(authPromise, 'true expected');
@@ -99,8 +99,8 @@ tape.test('if at least one role is present with Any rule then return true', func
 tape.test('if no roles are present with Any rule then return false', function(t) {
 
     const authPromise = auth.isAuthorized([], {
-        scope: [auth.scope.admin, auth.scope.client],
-        rule: auth.rule.any
+        scope: [auth.SCOPE.ADMIN, auth.SCOPE.CLIENT],
+        rule: auth.RULE.ANY
     });
 
     t.notOk(authPromise, 'false expected');
@@ -109,9 +109,9 @@ tape.test('if no roles are present with Any rule then return false', function(t)
 
 tape.test('if at least one role is present with None rule then return false', function(t) {
 
-    const authPromise = auth.isAuthorized(['admin'], {
-        scope: [auth.scope.admin, auth.scope.client],
-        rule: auth.rule.none
+    const authPromise = auth.isAuthorized([auth.SCOPE.ADMIN], {
+        scope: [auth.SCOPE.ADMIN, auth.SCOPE.CLIENT],
+        rule: auth.RULE.NONE
     });
 
     t.notOk(authPromise, 'false expected');
@@ -120,9 +120,9 @@ tape.test('if at least one role is present with None rule then return false', fu
 
 tape.test('if no unallowed roles present with None rule then return true', function(t) {
 
-    const authPromise = auth.isAuthorized(['admin'], {
-        scope: [auth.scope.client],
-        rule: auth.rule.none
+    const authPromise = auth.isAuthorized([auth.SCOPE.ADMIN], {
+        scope: [auth.SCOPE.CLIENT],
+        rule: auth.RULE.NONE
     });
 
     t.ok(authPromise, 'true expected');
@@ -132,8 +132,8 @@ tape.test('if no unallowed roles present with None rule then return true', funct
 tape.test('if valid token and valid scope then return true', function(t) {
 
     const authPromise = auth.authenticate('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.MjK579tyUaxtY9FXpTktC-vssI-rOS1RNsGl8KWX9mM', {
-        scope: [auth.scope.admin],
-        rule: auth.rule.none
+        scope: [auth.SCOPE.ADMIN],
+        rule: auth.RULE.NONE
     });
 
     t.ok(authPromise, 'true expected');
@@ -143,8 +143,8 @@ tape.test('if valid token and valid scope then return true', function(t) {
 tape.test('if invalid token and valid scope then false', function(t) {
 
     const authPromise = auth.authenticate('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.MjK579tyUaxtY9FXpTktC-vssI-rOS1RNsGl8KWX9mM' + 'foo', {
-        scope: [auth.scope.admin],
-        rule: auth.rule.none
+        scope: [auth.SCOPE.ADMIN],
+        rule: auth.RULE.NONE
     });
 
     authPromise.then(function(decoded) {
@@ -160,7 +160,7 @@ tape.test('if invalid token and valid scope then false', function(t) {
 tape.test('if valid token and invalid scope then false', function(t) {
 
     const authPromise = auth.authenticate('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.MjK579tyUaxtY9FXpTktC-vssI-rOS1RNsGl8KWX9mM', {
-        scope: [auth.scope.tester]
+        scope: [auth.SCOPE.TESTER]
     });
 
     authPromise.then(function(decoded) {

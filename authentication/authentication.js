@@ -14,8 +14,8 @@ module.exports = {
      *                              example:
      *
      *                              requirements = {
-     *                                  rule: 'all',
-     *                                  scope: ['tester', 'qa_manager']
+     *                                  rule: RULE.ALL,
+     *                                  scope: [SCOPE.TESTER, SCOPE.QA]
      *                              }
      */
     authenticate: function(token, requirements) {
@@ -57,18 +57,18 @@ module.exports = {
     /**
      * checks if client has the necessary scopes
      *
-     * @param array clientScopes - scopes that the client is allowed into
+     * @param array clientScopes - scopes that the client has
      * @param object requirements - requirements for a request. Contains required
      *                              scopes and a rule for the scopes.
      *                              example:
      *
      *                              requirements = {
-     *                                  rule: 'all',
-     *                                  scope: ['tester', 'qa_manager']
+     *                                  rule: RULE.ALL,
+     *                                  scope: [SCOPE.TESTER, SCOPE.QA]
      *                              }
      */
     isAuthorized: function(clientScopes, requirements) {
-        const requestRule = requirements.rule ? requirements.rule : this.rule.all;
+        const requestRule = requirements.rule ? requirements.rule : this.RULE.ALL;
         const requiredScopes = requirements ? [].concat(requirements.scope) : null;
         const presentScopes = clientScopes ? [].concat(clientScopes) : null;
 
@@ -81,13 +81,13 @@ module.exports = {
                 return presentScopes.indexOf(item) != -1;
             });
 
-            if (requestRule === this.rule.any && filtered.length === 0) {
+            if (requestRule === this.RULE.ANY && filtered.length === 0) {
                 return false;
             }
-            if (requestRule === this.rule.all && filtered.length != requiredScopes.length) {
+            if (requestRule === this.RULE.ALL && filtered.length != requiredScopes.length) {
                 return false;
             }
-            if (requestRule === this.rule.none && filtered.length > 0) {
+            if (requestRule === this.RULE.NONE && filtered.length > 0) {
                 return false;
             }
         }
@@ -95,16 +95,16 @@ module.exports = {
         return true;
     },
 
-    scope: {
-        tester: 'tester',
-        client: 'client',
-        qa: 'qa_manager',
-        admin: 'admin'
+    SCOPE: {
+        TESTER: 'tester',
+        CLIENT: 'client',
+        QA: 'qa_manager',
+        ADMIN: 'admin'
     },
 
-    rule: {
-        any: 'any',
-        none: 'none',
-        all: 'all'
+    RULE: {
+        ANY: 'any',
+        NONE: 'none',
+        ALL: 'all'
     }
 };
