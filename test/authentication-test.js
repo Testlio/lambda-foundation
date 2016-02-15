@@ -57,7 +57,7 @@ tape.test('If valid token with Bearer keyword then return decoded token', functi
 
 tape.test('if all roles not present with no rules then return false', function(t) {
 
-    const result = auth.isAuthorized([], {
+    const result = auth.isAuthorized({}, {
         scope: [auth.SCOPE.CLIENT, auth.SCOPE.ADMIN]
     });
 
@@ -67,7 +67,7 @@ tape.test('if all roles not present with no rules then return false', function(t
 
 tape.test('if all roles are present with no rules then return true', function(t) {
 
-    const authPromise = auth.isAuthorized([auth.SCOPE.CLIENT, auth.SCOPE.ADMIN], {
+    const authPromise = auth.isAuthorized({ scope: [auth.SCOPE.CLIENT, auth.SCOPE.ADMIN] }, {
         scope: [auth.SCOPE.CLIENT, auth.SCOPE.ADMIN]
     });
 
@@ -77,7 +77,7 @@ tape.test('if all roles are present with no rules then return true', function(t)
 
 tape.test('if all roles are not present with no rule then return false', function(t) {
 
-    const authPromise = auth.isAuthorized([auth.SCOPE.ADMIN], {
+    const authPromise = auth.isAuthorized({ scope: [auth.SCOPE.ADMIN] }, {
         scope: [auth.SCOPE.CLIENT, auth.SCOPE.ADMIN]
     });
 
@@ -87,7 +87,7 @@ tape.test('if all roles are not present with no rule then return false', functio
 
 tape.test('if at least one role is present with Any rule then return true', function(t) {
 
-    const authPromise = auth.isAuthorized([auth.SCOPE.ADMIN], {
+    const authPromise = auth.isAuthorized({ scope: [auth.SCOPE.ADMIN] }, {
         scope: [auth.SCOPE.ADMIN, auth.SCOPE.CLIENT],
         rule: auth.RULE.ANY
     });
@@ -98,7 +98,7 @@ tape.test('if at least one role is present with Any rule then return true', func
 
 tape.test('if no roles are present with Any rule then return false', function(t) {
 
-    const authPromise = auth.isAuthorized([], {
+    const authPromise = auth.isAuthorized({ scope: [] }, {
         scope: [auth.SCOPE.ADMIN, auth.SCOPE.CLIENT],
         rule: auth.RULE.ANY
     });
@@ -109,7 +109,7 @@ tape.test('if no roles are present with Any rule then return false', function(t)
 
 tape.test('if at least one role is present with None rule then return false', function(t) {
 
-    const authPromise = auth.isAuthorized([auth.SCOPE.ADMIN], {
+    const authPromise = auth.isAuthorized({ scope: [auth.SCOPE.ADMIN] }, {
         scope: [auth.SCOPE.ADMIN, auth.SCOPE.CLIENT],
         rule: auth.RULE.NONE
     });
@@ -120,7 +120,7 @@ tape.test('if at least one role is present with None rule then return false', fu
 
 tape.test('if no unallowed roles present with None rule then return true', function(t) {
 
-    const authPromise = auth.isAuthorized([auth.SCOPE.ADMIN], {
+    const authPromise = auth.isAuthorized({ scope: [auth.SCOPE.ADMIN] }, {
         scope: [auth.SCOPE.CLIENT],
         rule: auth.RULE.NONE
     });

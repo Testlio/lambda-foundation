@@ -58,7 +58,7 @@ function handler(event, context) {
         console.log('Hi, ' + jwt.sub);
 
         // We can check which exactly was satisfied
-        if (auth.isAuthorized(jwt.scope, { scopes: [Auth.SCOPE.ADMIN] })) {
+        if (auth.verifyScopes(jwt, { scopes: [Auth.SCOPE.ADMIN] })) {
             // Admin
         } else {
             // Client

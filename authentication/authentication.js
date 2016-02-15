@@ -10,7 +10,7 @@ module.exports = {
      * Checks if token is validated and if client has necessary scopes
      *
      * @param string token - jwt token to be validated
-     * @param object requirements - requirements for a request. Contains required
+     * @param object requirements - requirements to fulfill. Contains required
      *                              scopes and a rule for the scopes.
      *                              example:
      *
@@ -24,10 +24,12 @@ module.exports = {
             const tokenPromise = module.exports.validateToken(token);
 
             tokenPromise.then(function(decoded) {
-                if (isAuthorized(decoded.scope, requirements)) {
-                    return Promise.resolve(decoded);
+                if (isAuthorized(decoded, requirements)) {
+                    resolve(decoded);
+                } else {
+                    // Lacking scopes is not a sign of completely invalid token
+                    reject(Error('403', 'Forbidden'));
                 }
-                return Promise.reject(Error('401', 'Invalid token'));
             }).catch(function(err) {
                 return reject(Error('401', 'Invalid token'));
             });
@@ -54,16 +56,16 @@ module.exports = {
 
                 resolve(decoded);
             } catch(err) {
-                return reject(Error('401', 'Invalid token'));
+                reject(Error('401', 'Invalid token'));
             }
         });
     },
 
     /**
-     * Checks if client has the necessary scopes
+     * Checks if client token has the necessary scopes
      *
-     * @param array clientScopes - scopes that the client has
-     * @param object requirements - requirements for a request. Contains required
+     * @param object jwt - client token
+     * @param object requirements - requirements to fulfill. Contains required
      *                              scopes and a rule for the scopes.
      *                              example:
      *
@@ -72,10 +74,11 @@ module.exports = {
      *                                  scope: [SCOPE.TESTER, SCOPE.QA]
      *                              }
      */
-    isAuthorized: function(clientScopes, requirements) {
+    isAuthorized: function(jwt, requirements) {
+        const scopes = jwt.scope;
         const requestRule = requirements.rule ? requirements.rule : this.RULE.ALL;
         const requiredScopes = requirements ? [].concat(requirements.scope) : null;
-        const presentScopes = clientScopes ? [].concat(clientScopes) : null;
+        const presentScopes = scopes ? [].concat(scopes) : null;
 
         if (requiredScopes && requiredScopes.length > 0) {
             if (!presentScopes) {
