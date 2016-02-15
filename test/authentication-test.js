@@ -5,28 +5,28 @@ tape.test('If no token then return 401', function(t) {
 
     const authPromise = auth.validateToken();
 
-    authPromise.then(function(decoded) {
+    authPromise.then(function() {
         t.fail('didn\'t throw error');
         t.end();
     }).catch(function(err) {
         t.ok(err, 'error is returned');
         t.equal('401', err.code);
         t.end();
-    })
+    });
 });
 
 tape.test('If invalid token then return 401', function(t) {
 
     const authPromise = auth.validateToken('foo');
 
-    authPromise.then(function(decoded) {
+    authPromise.then(function() {
         t.fail('didn\'t throw error');
         t.end();
     }).catch(function(err) {
         t.ok(err, 'error is returned');
         t.equal('401', err.code);
         t.end();
-    })
+    });
 });
 
 tape.test('If valid token then return decoded token', function(t) {
@@ -39,7 +39,7 @@ tape.test('If valid token then return decoded token', function(t) {
     }).catch(function(err) {
         t.fail('should not throw error: ' + err);
         t.end();
-    })
+    });
 });
 
 tape.test('If valid token with Bearer keyword then return decoded token', function(t) {
@@ -52,7 +52,7 @@ tape.test('If valid token with Bearer keyword then return decoded token', functi
     }).catch(function(err) {
         t.fail('should not throw error: ' + err);
         t.end();
-    })
+    });
 });
 
 tape.test('if all roles not present with no rules then return false', function(t) {
@@ -147,14 +147,14 @@ tape.test('if invalid token and valid scope then false', function(t) {
         rule: auth.RULE.NONE
     });
 
-    authPromise.then(function(decoded) {
+    authPromise.then(function() {
         t.fail('didn\'t throw error');
         t.end();
     }).catch(function(err) {
         t.ok(err, 'error is returned');
         t.equal('401', err.code);
         t.end();
-    })
+    });
 });
 
 tape.test('if valid token and invalid scope then false', function(t) {
@@ -163,12 +163,12 @@ tape.test('if valid token and invalid scope then false', function(t) {
         scope: [auth.SCOPE.TESTER]
     });
 
-    authPromise.then(function(decoded) {
+    authPromise.then(function() {
         t.fail('didn\'t throw error');
         t.end();
     }).catch(function(err) {
         t.ok(err, 'error is returned');
         t.equal('401', err.code);
         t.end();
-    })
+    });
 });
