@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = {
     error: function(code, message, info) {

@@ -60,7 +60,7 @@ module.exports = {
     },
 
     /**
-     * checks if client has the necessary scopes
+     * Checks if client has the necessary scopes
      *
      * @param array clientScopes - scopes that the client has
      * @param object requirements - requirements for a request. Contains required
