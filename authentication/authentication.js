@@ -5,35 +5,21 @@ const Promise = require('promiscuous');
 const Error = require('../error-reporting/error').error;
 
 module.exports = {
+    //
+    //  Constants
+    //
 
-    /**
-     * Checks if token is validated and if client has necessary scopes
-     *
-     * @param string token - jwt token to be validated
-     * @param object requirements - requirements to fulfill. Contains required
-     *                              scopes and a rule for the scopes.
-     *                              example:
-     *
-     *                              requirements = {
-     *                                  rule: RULE.ALL,
-     *                                  scope: [SCOPE.TESTER, SCOPE.QA]
-     *                              }
-     */
-    authenticate: function(token, requirements) {
-        return new Promise(function(resolve, reject) {
-            const tokenPromise = module.exports.validateToken(token);
+    SCOPE: {
+        TESTER: 'tester',
+        CLIENT: 'client',
+        QA: 'qa_manager',
+        ADMIN: 'admin'
+    },
 
-            tokenPromise.then(function(decoded) {
-                if (isAuthorized(decoded, requirements)) {
-                    resolve(decoded);
-                } else {
-                    // Lacking scopes is not a sign of completely invalid token
-                    reject(Error('403', 'Forbidden'));
-                }
-            }).catch(function(err) {
-                return reject(Error('401', 'Invalid token'));
-            });
-        });
+    RULE: {
+        ANY: 'any',
+        NONE: 'none',
+        ALL: 'all'
     },
 
     /**
@@ -64,7 +50,7 @@ module.exports = {
     /**
      * Checks if client token has the necessary scopes
      *
-     * @param object jwt - client token
+     * @param object token - client token
      * @param object requirements - requirements to fulfill. Contains required
      *                              scopes and a rule for the scopes.
      *                              example:
@@ -74,8 +60,8 @@ module.exports = {
      *                                  scope: [SCOPE.TESTER, SCOPE.QA]
      *                              }
      */
-    isAuthorized: function(jwt, requirements) {
-        const scopes = jwt.scope;
+    isAuthorized: function(token, requirements) {
+        const scopes = token.scope;
         const requestRule = requirements.rule ? requirements.rule : this.RULE.ALL;
         const requiredScopes = requirements ? [].concat(requirements.scope) : null;
         const presentScopes = scopes ? [].concat(scopes) : null;
@@ -103,16 +89,33 @@ module.exports = {
         return true;
     },
 
-    SCOPE: {
-        TESTER: 'tester',
-        CLIENT: 'client',
-        QA: 'qa_manager',
-        ADMIN: 'admin'
-    },
+    /**
+     * Checks if token is validated and if client has necessary scopes
+     *
+     * @param string token - jwt token to be validated
+     * @param object requirements - requirements to fulfill. Contains required
+     *                              scopes and a rule for the scopes.
+     *                              example:
+     *
+     *                              requirements = {
+     *                                  rule: RULE.ALL,
+     *                                  scope: [SCOPE.TESTER, SCOPE.QA]
+     *                              }
+     */
+    authenticate: function(token, requirements) {
+        return new Promise(function(resolve, reject) {
+            const tokenPromise = module.exports.validateToken(token);
 
-    RULE: {
-        ANY: 'any',
-        NONE: 'none',
-        ALL: 'all'
+            tokenPromise.then(function(decoded) {
+                if (module.exports.isAuthorized(decoded, requirements)) {
+                    resolve(decoded);
+                } else {
+                    // Lacking scopes is not a sign of completely invalid token
+                    reject(Error('403', 'Forbidden'));
+                }
+            }).catch(function() {
+                return reject(Error('401', 'Invalid token'));
+            });
+        });
     }
 };
