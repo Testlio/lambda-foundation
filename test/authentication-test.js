@@ -167,7 +167,6 @@ tape.test('if valid token and invalid scope then false', function(t) {
         t.fail('didn\'t throw error');
         t.end();
     }).catch(function(err) {
-console.log(':asasas');
         t.ok(err, 'error is returned');
         t.equal('401', err.code);
         t.end();
