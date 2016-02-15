@@ -1,12 +1,13 @@
+'use strict';
+
 const jwt = require('jsonwebtoken');
 const Promise = require('promiscuous');
 const Error = require('../error-reporting/error').error;
-const config = require('../configuration/config');
 
 module.exports = {
 
     /**
-     * checks if token is validated and if client has necessary scopes
+     * Checks if token is validated and if client has necessary scopes
      *
      * @param string token - jwt token to be validated
      * @param object requirements - requirements for a request. Contains required
@@ -21,6 +22,7 @@ module.exports = {
     authenticate: function(token, requirements) {
         return new Promise(function(resolve, reject) {
             const tokenPromise = module.exports.validateToken(token);
+
             tokenPromise.then(function(decoded) {
                 if (isAuthorized(decoded.scope, requirements)) {
                     return Promise.resolve(decoded);
@@ -33,7 +35,7 @@ module.exports = {
     },
 
     /**
-     * checks if jwt token is valid
+     * Checks if jwt token is valid
      *
      * @param string token - jwt token to be validated
      */
@@ -44,9 +46,12 @@ module.exports = {
                     token = token.substring(6).trim();
                 }
 
-                const decoded = jwt.verify(token, config.auth.secret, {
+                // Read the secret from the env or fall back to default one
+                const secret = process.env.AUTH_SECRET || 'default_secret';
+                const decoded = jwt.verify(token, secret, {
                     algorithms: ["HS256"]
                 });
+
                 resolve(decoded);
             } catch(err) {
                 return reject(Error('401', 'Invalid token'));
