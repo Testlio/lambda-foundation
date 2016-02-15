@@ -1,58 +1,57 @@
+'use strict';
+
 const tape = require('tape');
 const auth = require('../lib/authentication');
 
 tape.test('If no token then return 401', function(t) {
 
-    const authPromise = auth.validateToken();
+    try {
+        auth.isValidToken();
 
-    authPromise.then(function() {
         t.fail('didn\'t throw error');
         t.end();
-    }).catch(function(err) {
+    } catch (err) {
         t.ok(err, 'error is returned');
         t.equal('401', err.code);
         t.end();
-    });
+    }
 });
 
 tape.test('If invalid token then return 401', function(t) {
 
-    const authPromise = auth.validateToken('foo');
-
-    authPromise.then(function() {
+    try {
+        auth.isValidToken('foo');
         t.fail('didn\'t throw error');
         t.end();
-    }).catch(function(err) {
+    } catch (err) {
         t.ok(err, 'error is returned');
         t.equal('401', err.code);
         t.end();
-    });
+    }
 });
 
 tape.test('If valid token then return decoded token', function(t) {
 
-    const authPromise = auth.validateToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.MjK579tyUaxtY9FXpTktC-vssI-rOS1RNsGl8KWX9mM');
-
-    authPromise.then(function(decoded) {
+    try {
+        const decoded = auth.isValidToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.MjK579tyUaxtY9FXpTktC-vssI-rOS1RNsGl8KWX9mM');
         t.equal('test@test.com', decoded.sub);
         t.end();
-    }).catch(function(err) {
+    } catch (err) {
         t.fail('should not throw error: ' + err);
         t.end();
-    });
+    }
 });
 
 tape.test('If valid token with Bearer keyword then return decoded token', function(t) {
 
-    const authPromise = auth.validateToken('Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.MjK579tyUaxtY9FXpTktC-vssI-rOS1RNsGl8KWX9mM');
-
-    authPromise.then(function(decoded) {
+    try {
+        const decoded = auth.isValidToken('Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.MjK579tyUaxtY9FXpTktC-vssI-rOS1RNsGl8KWX9mM');
         t.equal('test@test.com', decoded.sub);
         t.end();
-    }).catch(function(err) {
+    } catch (err) {
         t.fail('should not throw error: ' + err);
         t.end();
-    });
+    }
 });
 
 tape.test('if all roles not present with no rules then return false', function(t) {
