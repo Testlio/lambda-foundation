@@ -1,11 +1,8 @@
 'use strict';
 
-const proxyquire = require('proxyquire');
 const tape = require('tape');
 const Error = require('../lib/error')(['TEST']);
-const Reporter = require('../lib/error/reporter.js');
 const Raygun = require('../lib/error/raygun.js');
-const sinon = require('sinon');
 
 tape.test('Error reporting resolves to error', function(t) {
     let code = 401;
