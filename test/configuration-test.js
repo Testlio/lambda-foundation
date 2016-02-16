@@ -4,21 +4,21 @@ const tape = require('tape');
 const path = require('path');
 const config = require('../lib/configuration');
 
-function addDefaultConfig(config) {
-    config.aws = {
+function addDefaultConfig(conf) {
+    conf.aws = {
         stage: undefined,
         region: undefined
     };
 
-    config.project = {
+    conf.project = {
         name: undefined
     };
 
-    config.url = {
+    conf.url = {
         base: 'http://localhost'
     };
 
-    return config;
+    return conf;
 }
 
 tape.test('Loading default configuration', function(t) {
