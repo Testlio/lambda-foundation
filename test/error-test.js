@@ -6,7 +6,6 @@ const raygunStub = {
             let init = function() {
                 return {
                     send: function(err, data, cb) {
-                        //console.log('Not sending to Raygun', err);
                         cb();
                     }
                 };
