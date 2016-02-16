@@ -23,8 +23,10 @@ const Reporter = proxyquire('../lib/error/reporter.js', raygunStub);
 tape.test('test Raygun reporting', function(t) {
     let code = 401;
     let message = 'serious error happened';
+    let extra = {'id': 123};
+    let request = {'request':'caused error'}
 
-    Error.report(new Error.error(code, message)).then(function(err) {
+    Error.report(new Error.error(code, message, extra, request)).then(function(err) {
             t.equal(err.message, code + ': ' + message, 'Error is correct');
             t.end();
         }
