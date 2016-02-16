@@ -1,0 +1,9 @@
+machine:
+  node:
+    version: 5.4.0
+
+deployment:
+    production:
+        branch: master
+        commands:
+            - npm publish || true
