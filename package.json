@@ -33,7 +33,6 @@
     "falafel": "^1.2.0",
     "lodash": "^4.3.0",
     "promiscuous": "^0.6.0",
-    "proxyquire": "^1.7.4",
     "raygun": "^0.8.5",
     "through2": "^2.0.1"
   },
