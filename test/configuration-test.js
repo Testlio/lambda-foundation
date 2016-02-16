@@ -30,6 +30,7 @@ tape.test('Loading default configuration', function(t) {
 });
 
 tape.test('Environment config overwrites default values', function(t) {
+    process.env.NODE_ENV = 'development';
     const resolvedConfig = config(path.resolve(__dirname, 'configs/2'));
     const comparison = {
         example: "different",
