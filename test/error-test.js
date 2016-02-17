@@ -25,9 +25,9 @@ tape.test('Error sent to Raygun', function(t) {
     const expectedError = new Error.error(expectedCode, expectedMessage, expectedExtra, expectedRequest);
 
     Raygun.send = function(actualError, actualExtra, cb, actualRequest) {
-        t.same(expectedError, actualError, 'Error reported to Raygun');
-        t.equal(expectedError.extra, actualExtra, 'Extras reported to Raygun');
-        t.equal(expectedError.request, actualRequest, 'Request reported to Raygun');
+        t.same(actualError, expectedError, 'Error reported to Raygun');
+        t.equal(actualExtra, expectedError.extra, 'Extras reported to Raygun');
+        t.equal(actualRequest, expectedError.request, 'Request reported to Raygun');
         cb();
     };
 
@@ -45,7 +45,7 @@ tape.test('Error reporting failure resolves to error', function(t) {
     Raygun.send = {};
 
     Error.report(expectedError).then(function(actualError) {
-        t.same(expectedError, actualError, 'Error reported to Raygun');
+        t.same(actualError, expectedError, 'Error reported to Raygun');
         t.end();
     });
 });
