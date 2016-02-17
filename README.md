@@ -1,5 +1,7 @@
 # Lambda Foundation
 
+[![Circle CI status](https://circleci.com/gh/Testlio/lambda-foundation.svg?style=svg&circle-token=279b8c8c389637b8f81b9f6dd2da434cc76a530a)](https://circleci.com/gh/Testlio/lambda-foundation)
+
 Lambda Foundation contains various shared parts that [AWS Lambda](https://aws.amazon.com/lambda/) backed microservices need and use. In its current state this package aims to simplify authentication, error reporting, service discovery (including URL resolving) and configuration.
 
 ## Installation and Usage
