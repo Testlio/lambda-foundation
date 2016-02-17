@@ -2,6 +2,10 @@ machine:
   node:
     version: 5.4.0
 
+test:
+    pre:
+        - npm run lint
+
 deployment:
     production:
         branch: master
