@@ -1,8 +1,13 @@
 'use strict';
 
 const tape = require('tape');
-const Error = require('../lib/error')(['TEST']);
+const Error = require('../lib/error');
 const Raygun = require('../lib/error/raygun.js');
+
+// Add a TEST tag to our errors
+Error.config({
+    tags: ['TEST']
+});
 
 tape.test('Error reporting resolves to error', function(t) {
     const code = 401;
