@@ -12,7 +12,7 @@ tape.test('If no token then return 401', function(t) {
         t.end();
     } catch (err) {
         t.ok(err, 'error is returned');
-        t.equal('401', err.code);
+        t.equal(err.code, '401');
         t.end();
     }
 });
@@ -25,7 +25,7 @@ tape.test('If invalid token then return 401', function(t) {
         t.end();
     } catch (err) {
         t.ok(err, 'error is returned');
-        t.equal('401', err.code);
+        t.equal(err.code, '401');
         t.end();
     }
 });
@@ -34,7 +34,7 @@ tape.test('If valid token then return decoded token', function(t) {
 
     try {
         const decoded = auth.isValidToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.MjK579tyUaxtY9FXpTktC-vssI-rOS1RNsGl8KWX9mM');
-        t.equal('test@test.com', decoded.sub);
+        t.equal(decoded.sub, 'test@test.com');
         t.end();
     } catch (err) {
         t.fail('should not throw error: ' + err);
@@ -46,7 +46,7 @@ tape.test('If valid token with Bearer keyword then return decoded token', functi
 
     try {
         const decoded = auth.isValidToken('Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.MjK579tyUaxtY9FXpTktC-vssI-rOS1RNsGl8KWX9mM');
-        t.equal('test@test.com', decoded.sub);
+        t.equal(decoded.sub, 'test@test.com');
         t.end();
     } catch (err) {
         t.fail('should not throw error: ' + err);
@@ -151,7 +151,7 @@ tape.test('if invalid token and valid scope then false', function(t) {
         t.end();
     }).catch(function(err) {
         t.ok(err, 'error is returned');
-        t.equal('401', err.code);
+        t.equal(err.code, '401');
         t.end();
     });
 });
@@ -167,7 +167,7 @@ tape.test('if valid token and invalid scope then false', function(t) {
         t.end();
     }).catch(function(err) {
         t.ok(err, 'error is returned');
-        t.equal('403', err.code);
+        t.equal(err.code, '403');
         t.end();
     });
 });
