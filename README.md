@@ -221,8 +221,8 @@ function handler(event, context) {
 
         // Everything is fine and work can continue
         ...
-    }).catch(function(err) {
+    }).then(context.done).catch(function(err) {
         return Error.report(err).then(context.fail);
-    }).then(context.done);
+    });
 }
 ```
