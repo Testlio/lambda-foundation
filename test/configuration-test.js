@@ -2,7 +2,19 @@
 
 const tape = require('tape');
 const path = require('path');
-const config = require('../lib/configuration');
+
+function addDefaultConfig(config) {
+    config.aws = {
+        stage: undefined,
+        region: undefined
+    };
+
+    config.project = {
+        name: undefined
+    };
+
+    return config;
+}
 
 function addDefaultConfig(conf) {
     conf.aws = {
@@ -22,7 +34,11 @@ function addDefaultConfig(conf) {
 }
 
 tape.test('Loading default configuration', function(t) {
-    const resolvedConfig = config(path.resolve(__dirname, 'configs/1'));
+    process.env.CONFIGURATION_DIR = path.resolve(__dirname, 'configs/1');
+
+    delete require.cache[require.resolve('../lib/configuration')];
+    const resolvedConfig = require('../lib/configuration');
+
     const comparison = {
         example: "value",
         nested: {
@@ -37,7 +53,12 @@ tape.test('Loading default configuration', function(t) {
 });
 
 tape.test('Environment config overwrites default values', function(t) {
-    const resolvedConfig = config(path.resolve(__dirname, 'configs/2'));
+    process.env.NODE_ENV = 'development';
+    process.env.CONFIGURATION_DIR = path.resolve(__dirname, 'configs/2');
+
+    delete require.cache[require.resolve('../lib/configuration')];
+    const resolvedConfig = require('../lib/configuration');
+
     const comparison = {
         example: "different",
         nested: {
@@ -54,7 +75,11 @@ tape.test('Environment config overwrites default values', function(t) {
 
 tape.test('Only active environment configuration is loaded', function(t) {
     process.env.NODE_ENV = 'production';
-    const resolvedConfig = config(path.resolve(__dirname, 'configs/2'));
+    process.env.CONFIGURATION_DIR = path.resolve(__dirname, 'configs/2');
+
+    delete require.cache[require.resolve('../lib/configuration')];
+    const resolvedConfig = require('../lib/configuration');
+
     const comparison = {
         example: "production",
         nested: {
@@ -72,7 +97,12 @@ tape.test('Only active environment configuration is loaded', function(t) {
 tape.test('Environment variables mapping overwrites previous values', function(t) {
     process.env.NODE_ENV = 'development';
     process.env.EXAMPLE = 'env_value';
-    const resolvedConfig = config(path.resolve(__dirname, 'configs/3'));
+
+    process.env.CONFIGURATION_DIR = path.resolve(__dirname, 'configs/3');
+
+    delete require.cache[require.resolve('../lib/configuration')];
+    const resolvedConfig = require('../lib/configuration');
+
     const comparison = {
         example: "env_value",
         nested: {
