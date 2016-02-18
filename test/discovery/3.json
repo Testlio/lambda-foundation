@@ -1,0 +1,15 @@
+{
+    "resources": {
+        "people": {
+            "passthrough": true,
+            "resources": {
+                "adults": {},
+                "children": {
+                    "resources": {
+                        "infants": {}    
+                    }
+                }
+            }
+        }
+    }
+}
