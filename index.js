@@ -2,9 +2,10 @@
 
 const config = require('./lib/configuration');
 const auth = require('./lib/authentication');
-const path = require('path');
+const error = require('./lib/error');
 
 module.exports = {
     authentication: auth,
-    configuration: config(path.resolve(process.cwd(), 'config'))
+    configuration: config,
+    error: error
 };
