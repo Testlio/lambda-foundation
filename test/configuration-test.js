@@ -13,6 +13,10 @@ function addDefaultConfig(config) {
         name: undefined
     };
 
+    conf.url = {
+        base: 'http://localhost'
+    };
+
     return config;
 }
 
@@ -26,9 +30,6 @@ function addDefaultConfig(conf) {
         name: undefined
     };
 
-    conf.url = {
-        base: 'http://localhost'
-    };
 
     return conf;
 }
