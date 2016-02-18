@@ -21,7 +21,7 @@ tape.test('Loading default configuration', function(t) {
 
     delete require.cache[require.resolve('../lib/configuration')];
     const resolvedConfig = require('../lib/configuration');
-    
+
     const comparison = {
         example: "value",
         nested: {
@@ -36,6 +36,7 @@ tape.test('Loading default configuration', function(t) {
 });
 
 tape.test('Environment config overwrites default values', function(t) {
+    process.env.NODE_ENV = 'development';
     process.env.CONFIGURATION_DIR = path.resolve(__dirname, 'configs/2');
 
     delete require.cache[require.resolve('../lib/configuration')];
