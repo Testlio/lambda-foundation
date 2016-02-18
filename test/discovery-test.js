@@ -5,7 +5,7 @@ const path = require('path');
 const discovery = require('../lib/discovery');
 
 tape.test('Loading simple discovery resources', function(t) {
-    process.env.DISCOVERY_FILE_PATH = path.resolve(__dirname, 'discovery/1.json');
+    process.env.LAMBDA_DISCOVERY_FILE = path.resolve(__dirname, 'discovery/1.json');
     const resolvedConfig = discovery('http://localhost');
     const comparison = {
         resources: {
@@ -24,7 +24,7 @@ tape.test('Loading simple discovery resources', function(t) {
 });
 
 tape.test('Loading nested discovery resources', function(t) {
-    process.env.DISCOVERY_FILE_PATH = path.resolve(__dirname, 'discovery/2.json');
+    process.env.LAMBDA_DISCOVERY_FILE = path.resolve(__dirname, 'discovery/2.json');
     const resolvedConfig = discovery('http://localhost');
     const comparison = {
         resources: {
@@ -42,7 +42,7 @@ tape.test('Loading nested discovery resources', function(t) {
 });
 
 tape.test('Loading complex nested discovery resources', function(t) {
-    process.env.DISCOVERY_FILE_PATH = path.resolve(__dirname, 'discovery/3.json');
+    process.env.LAMBDA_DISCOVERY_FILE = path.resolve(__dirname, 'discovery/3.json');
     const resolvedConfig = discovery('http://localhost');
     const comparison = {
         resources: {
@@ -65,7 +65,7 @@ tape.test('Loading complex nested discovery resources', function(t) {
 });
 
 tape.test('Loading discovery resources with different base URL', function(t) {
-    process.env.DISCOVERY_FILE_PATH = path.resolve(__dirname, 'discovery/1.json');
+    process.env.LAMBDA_DISCOVERY_FILE = path.resolve(__dirname, 'discovery/1.json');
     const resolvedConfig = discovery('https://api.testlio.com');
     const comparison = {
         resources: {
