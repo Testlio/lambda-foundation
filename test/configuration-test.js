@@ -20,20 +20,6 @@ function addDefaultConfig(config) {
     return config;
 }
 
-function addDefaultConfig(conf) {
-    conf.aws = {
-        stage: undefined,
-        region: undefined
-    };
-
-    conf.project = {
-        name: undefined
-    };
-
-
-    return conf;
-}
-
 tape.test('Loading default configuration', function(t) {
     process.env.CONFIGURATION_DIR = path.resolve(__dirname, 'configs/1');
 
