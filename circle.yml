@@ -6,8 +6,8 @@ test:
     pre:
         - npm run lint
 
-# deployment:
-#     production:
-#         branch: master
-#         commands:
-#             - npm publish || true
+deployment:
+    production:
+        branch: master
+        commands:
+            - npm publish || true
