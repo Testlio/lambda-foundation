@@ -5,7 +5,8 @@ const path = require('path');
 const discovery = require('../lib/discovery');
 
 tape.test('Loading simple discovery resources', function(t) {
-    const resolvedConfig = discovery('http://localhost', path.resolve(__dirname, 'discovery/1.json'));
+    process.env.DISCOVERY_FILE_PATH = path.resolve(__dirname, 'discovery/1.json');
+    const resolvedConfig = discovery('http://localhost');
     const comparison = {
         resources: {
             people: {
@@ -23,7 +24,8 @@ tape.test('Loading simple discovery resources', function(t) {
 });
 
 tape.test('Loading nested discovery resources', function(t) {
-    const resolvedConfig = discovery('http://localhost', path.resolve(__dirname, 'discovery/2.json'));
+    process.env.DISCOVERY_FILE_PATH = path.resolve(__dirname, 'discovery/2.json');
+    const resolvedConfig = discovery('http://localhost');
     const comparison = {
         resources: {
             people: {
@@ -40,7 +42,8 @@ tape.test('Loading nested discovery resources', function(t) {
 });
 
 tape.test('Loading complex nested discovery resources', function(t) {
-    const resolvedConfig = discovery('http://localhost', path.resolve(__dirname, 'discovery/3.json'));
+    process.env.DISCOVERY_FILE_PATH = path.resolve(__dirname, 'discovery/3.json');
+    const resolvedConfig = discovery('http://localhost');
     const comparison = {
         resources: {
             people: {
@@ -62,7 +65,8 @@ tape.test('Loading complex nested discovery resources', function(t) {
 });
 
 tape.test('Loading discovery resources with different base URL', function(t) {
-    const resolvedConfig = discovery('https://api.testlio.com', path.resolve(__dirname, 'discovery/1.json'));
+    process.env.DISCOVERY_FILE_PATH = path.resolve(__dirname, 'discovery/1.json');
+    const resolvedConfig = discovery('https://api.testlio.com');
     const comparison = {
         resources: {
             people: {
