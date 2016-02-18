@@ -13,7 +13,7 @@ function addDefaultConfig(config) {
         name: undefined
     };
 
-    conf.url = {
+    config.url = {
         base: 'http://localhost'
     };
 
