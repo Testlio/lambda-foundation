@@ -14,7 +14,7 @@ function addDefaultConfig(config) {
     };
 
     config.url = {
-        base: 'http://localhost'
+        base: undefined
     };
 
     return config;
