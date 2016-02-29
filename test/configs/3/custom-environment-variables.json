@@ -1,4 +1,7 @@
 {
     "example": "EXAMPLE",
-    "development": "DEVELOPMENT"
+    "development": "DEVELOPMENT",
+    "nested": {
+        "foo": "EXAMPLE"
+    }
 }
