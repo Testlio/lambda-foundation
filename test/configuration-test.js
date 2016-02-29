@@ -93,7 +93,7 @@ tape.test('Environment variables mapping overwrites previous values', function(t
     const comparison = {
         example: "env_value",
         nested: {
-            foo: "bar",
+            foo: "env_value",
             baz: true
         },
         array: [1, 2, 3, 4],
