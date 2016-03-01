@@ -12,6 +12,6 @@ tape.test('Should create model', function(t) {
         }
     }, {region: 'us-east-1'});
 
-    t.equal(testModel.table.tableName, 'test', 'Correct table name');
+    t.equal(testModel.tableName(), 'test', 'Correct table name');
     t.end();
 });
