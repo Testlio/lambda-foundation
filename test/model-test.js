@@ -10,7 +10,7 @@ tape.test('Should create model', function(t) {
             guid : joi.string().guid(),
             property: joi.number()
         }
-    }, {region: 'us-east-1'});
+    });
 
     t.equal(testModel.tableName(), 'test', 'Correct table name');
     t.end();
