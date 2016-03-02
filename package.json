@@ -43,6 +43,7 @@
   "devDependencies": {
     "eslint": "^2.0.0",
     "joi": "^8.0.4",
+    "local-dynamo": "^0.2.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0"
   }
