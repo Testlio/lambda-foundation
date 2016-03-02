@@ -6,6 +6,7 @@ const config = require('./lib/configuration');
 const auth = require('./lib/authentication');
 const discovery = require('./lib/discovery');
 const error = require('./lib/error');
+const model = require('./lib/model');
 
 module.exports = function() {
     // Create/read in a base HREF and resolve resources
@@ -16,6 +17,7 @@ module.exports = function() {
         authentication: auth,
         configuration: config,
         discovery: resources,
-        error: error
+        error: error,
+        model: model
     };
 }();
