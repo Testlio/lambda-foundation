@@ -1,58 +1,96 @@
 const joi = require('joi');
-const tape = require('tape');
+const test = require('./dynamo-test');
 const Model = require('../lib/model');
 
-/*eslint-disable no-console */
-tape.test('should have tableName', function(t) {
-    const TestModel = Model('Test', {
-        hashKey : 'guid',
-        schema : {
-            guid : joi.string().guid(),
-            property: joi.number()
-        }
-    });
-    t.equal(TestModel.tableName(), 'test', 'Correct table name');
-    t.end();
+const testItem1 = {key: 'aaa', property: 1};
+const testItem2 = {key: 'bbb', property: 2};
+const testItem3 = {key: 'ccc', property: 3};
+
+const testItems = [testItem1, testItem2, testItem3];
+
+const TestModel = Model('Test', {
+    hashKey : 'key',
+    schema : {
+        key : joi.string(),
+        property: joi.number()
+    }
 });
 
-tape.test('should create model', function(t) {
-    const TestModel = Model('Test', {
-        hashKey : 'guid',
-        schema : {
-            guid : joi.string().guid(),
-            property: joi.number()
-        }
+const options = {
+    testData: {
+    },
+    models: [TestModel]
+};
+
+options.testData[TestModel.tableName()] = testItems;
+
+/*eslint-disable no-console */
+test.test('Device model test', options, function(tape) {
+
+    tape.test('Should have tableName', function(t) {
+        t.equal(TestModel.tableName(), 'test', 'Correct table name');
+        t.end();
     });
 
-    TestModel.find('guid').then(function(result) {
-        console.log('find', result);
-    }).catch(function(err)  {
-        console.log('find', err);
+    tape.test('Should find item', function(t) {
+        TestModel.find('aaa').then(function(result) {
+            t.same(result, testItem1, 'Found item by key');
+            t.end();
+        }).catch(function(err)  {
+            t.fail(err);
+            t.end();
+        });
     });
 
-    TestModel.findItems(['guid']).then(function(result) {
-        console.log('findItems', result);
-    }).catch(function(err)  {
-        console.log('findItems', err);
+    tape.test('Should find items', function(t) {
+        TestModel.findItems(['aaa', 'bbb']).then(function(result) {
+            t.same(result, [testItem1, testItem2], 'Found items by key');
+            t.end();
+        }).catch(function(err)  {
+            t.fail(err);
+            t.end();
+        });
     });
 
-    TestModel.query('guid').loadAll().limit(1).exec().then(function(result) {
-        console.log('query', result);
-    }).catch(function(err)  {
-        console.log('query', err);
+    tape.test('Should query item', function(t) {
+        TestModel.query('aaa').loadAll().limit(1).exec().then(function(result) {
+            t.same(result, [testItem1], 'Found item by query');
+            t.end();
+        }).catch(function(err)  {
+            t.fail(err);
+            t.end();
+        });
     });
 
-    TestModel.create({guid: '7eacbb91-ef33-4d5a-a10c-2e9747adc2fa', property: 300}).then(function(result) {
-        console.log('create', result);
-    }).catch(function(err)  {
-        console.log('create', err);
+    tape.test('Should create item', function(t) {
+        const testItem4 = {key: 'ddd', property: 4};
+        TestModel.create(testItem4).then(function(result) {
+            t.same(result, testItem4, 'Created item');
+            t.end();
+        }).catch(function(err)  {
+            t.fail(err);
+            t.end();
+        });
     });
 
-    TestModel.update({guid: '7eacbb91-ef33-4d5a-a10c-2e9747adc2fa', property: 600}).then(function(result) {
-        console.log('update', result);
-    }).catch(function(err)  {
-        console.log('update', err);
+    tape.test('Should update item', function(t) {
+        const testItemUpdate3 = {key: testItem3.key, property: 5};
+        TestModel.update(testItemUpdate3, {ReturnValues: 'ALL_NEW'}).then(function(result) {
+            t.same(result, testItemUpdate3, 'Updated item');
+            t.end();
+        }).catch(function(err)  {
+            t.fail(err);
+            t.end();
+        });
     });
 
-    t.end();
+    tape.test('Should delete item', function(t) {
+        TestModel.destroy('aaa', {ReturnValues: 'ALL_OLD'}).then(function(result) {
+            t.same(result, testItem1, 'Deleted item');
+            t.end();
+        }).catch(function(err)  {
+            t.fail(err);
+            t.end();
+        });
+    });
 });
