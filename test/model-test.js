@@ -6,10 +6,6 @@ const Model = require('../lib/model');
 
 const testItem1 = {key: 'aaa', property: 1};
 const testItem2 = {key: 'bbb', property: 2};
-const testItem3 = {key: 'ccc', property: 3};
-const testItem4 = {key: 'ddd', property: 4};
-
-const testItemUpdate3 = {key: testItem3.key, property: 5};
 
 const TestModel = Model('Test', {
     hashKey : 'key',
@@ -25,11 +21,11 @@ const queryObj = modelObj.query();
 
 const createSpy = sinon.stub(modelObj, 'create', function() {
     const resolver = [].slice.call(arguments).pop();
-    resolver(null, {attrs: testItem4});
+    resolver(null, {attrs: testItem1});
 });
 const updateSpy = sinon.stub(modelObj, 'update', function() {
     const resolver = [].slice.call(arguments).pop();
-    resolver(null, {attrs: testItemUpdate3});
+    resolver(null, {attrs: testItem1});
 });
 const destroySpy = sinon.stub(modelObj, 'destroy', function() {
     const resolver = [].slice.call(arguments).pop();
@@ -83,8 +79,8 @@ tape.test('Should find items', function(t) {
 });
 
 tape.test('Should create item', function(t) {
-    TestModel.create(testItem4).then(function(result) {
-        t.same(result, testItem4, 'Created item');
+    TestModel.create(testItem1).then(function(result) {
+        t.same(result, testItem1, 'Created item');
         t.end();
     }).catch(function(err)  {
         t.fail(err);
@@ -93,8 +89,8 @@ tape.test('Should create item', function(t) {
 });
 
 tape.test('Should update item', function(t) {
-    TestModel.update(testItemUpdate3, {ReturnValues: 'ALL_NEW'}).then(function(result) {
-        t.same(result, testItemUpdate3, 'Updated item');
+    TestModel.update(testItem1, {ReturnValues: 'ALL_NEW'}).then(function(result) {
+        t.same(result, testItem1, 'Updated item');
         t.end();
     }).catch(function(err)  {
         t.fail(err);
