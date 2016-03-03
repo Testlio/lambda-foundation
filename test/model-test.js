@@ -19,38 +19,38 @@ const modelObj = vogels.models['Test'];
 
 const queryObj = modelObj.query();
 
-const createSpy = sinon.stub(modelObj, 'create', function() {
+const createStub = sinon.stub(modelObj, 'create', function() {
     const resolver = [].slice.call(arguments).pop();
     resolver(null, {attrs: testItem1});
 });
-const updateSpy = sinon.stub(modelObj, 'update', function() {
+const updateStub = sinon.stub(modelObj, 'update', function() {
     const resolver = [].slice.call(arguments).pop();
     resolver(null, {attrs: testItem1});
 });
-const destroySpy = sinon.stub(modelObj, 'destroy', function() {
+const destroyStub = sinon.stub(modelObj, 'destroy', function() {
     const resolver = [].slice.call(arguments).pop();
     resolver(null, {attrs: testItem1});
 });
-const getSpy = sinon.stub(modelObj, 'get', function() {
+const getStub = sinon.stub(modelObj, 'get', function() {
     const resolver = [].slice.call(arguments).pop();
     resolver(null, {attrs: testItem1});
 });
-const getItemsSpy = sinon.stub(modelObj, 'getItems', function() {
+const getItemsStub = sinon.stub(modelObj, 'getItems', function() {
     const resolver = [].slice.call(arguments).pop();
     resolver(null, [{attrs: testItem1}, {attrs: testItem2}]);
 });
 
-const execSpy = sinon.stub(queryObj, 'exec', function() {
+const execStub = sinon.stub(queryObj, 'exec', function() {
     const resolver = [].slice.call(arguments).pop();
     resolver(null, [{attrs: testItem1}]);
 });
 
 sinon.stub(modelObj, 'query', function() {
-    return {exec: execSpy};
+    return {exec: execStub};
 });
 
 sinon.stub(modelObj, 'scan', function() {
-    return {exec: execSpy};
+    return {exec: execStub};
 });
 
 tape.test('Should have tableName', function(t) {
@@ -129,11 +129,11 @@ tape.test('Should scan item', function(t) {
 });
 
 tape.test('Should call vogels methods', function(t) {
-    t.ok(createSpy.called, 'Create called');
-    t.ok(destroySpy.called, 'Destroy called');
-    t.ok(execSpy.calledTwice, 'Exec called twice');
-    t.ok(updateSpy.called, 'Update called');
-    t.ok(getSpy.called, 'Get called');
-    t.ok(getItemsSpy.called, 'GetItems called');
+    t.ok(createStub.called, 'Create called');
+    t.ok(destroyStub.called, 'Destroy called');
+    t.ok(execStub.calledTwice, 'Exec called twice');
+    t.ok(updateStub.called, 'Update called');
+    t.ok(getStub.called, 'Get called');
+    t.ok(getItemsStub.called, 'GetItems called');
     t.end();
 });
