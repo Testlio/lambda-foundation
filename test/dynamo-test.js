@@ -12,8 +12,6 @@ const port = 4567;
 const dynamodb = new vogels.AWS.DynamoDB({endpoint: 'http://localhost:' + port, region: 'us-east-1'});
 vogels.dynamoDriver(dynamodb);
 
-vogels.AWS.config.update({accessKeyId: 'AKID', secretAccessKey: 'SECRET', region: "us-east-1"});
-
 module.exports = {
     scan: function(table, callback) {
         const params = {

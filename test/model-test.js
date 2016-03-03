@@ -1,12 +1,15 @@
 const joi = require('joi');
-const test = require('./dynamo-test');
+const sinon = require('sinon');
+const vogels = require('vogels');
+const tape = require('tape');
 const Model = require('../lib/model');
 
 const testItem1 = {key: 'aaa', property: 1};
 const testItem2 = {key: 'bbb', property: 2};
 const testItem3 = {key: 'ccc', property: 3};
+const testItem4 = {key: 'ddd', property: 4};
 
-const testItems = [testItem1, testItem2, testItem3];
+const testItemUpdate3 = {key: testItem3.key, property: 5};
 
 const TestModel = Model('Test', {
     hashKey : 'key',
@@ -16,81 +19,125 @@ const TestModel = Model('Test', {
     }
 });
 
-const options = {
-    testData: {
-    },
-    models: [TestModel]
-};
+const modelObj = vogels.models['Test'];
 
-options.testData[TestModel.tableName()] = testItems;
+const queryObj = modelObj.query();
 
-/*eslint-disable no-console */
-test.test('Device model test', options, function(tape) {
+const createSpy = sinon.stub(modelObj, 'create', function() {
+    const resolver = [].slice.call(arguments).pop();
+    resolver(null, {attrs: testItem4});
+});
+const updateSpy = sinon.stub(modelObj, 'update', function() {
+    const resolver = [].slice.call(arguments).pop();
+    resolver(null, {attrs: testItemUpdate3});
+});
+const destroySpy = sinon.stub(modelObj, 'destroy', function() {
+    const resolver = [].slice.call(arguments).pop();
+    resolver(null, {attrs: testItem1});
+});
+const getSpy = sinon.stub(modelObj, 'get', function() {
+    const resolver = [].slice.call(arguments).pop();
+    resolver(null, {attrs: testItem1});
+});
+const getItemsSpy = sinon.stub(modelObj, 'getItems', function() {
+    const resolver = [].slice.call(arguments).pop();
+    resolver(null, [{attrs: testItem1}, {attrs: testItem2}]);
+});
 
-    tape.test('Should have tableName', function(t) {
-        t.equal(TestModel.tableName(), 'test', 'Correct table name');
+const execSpy = sinon.stub(queryObj, 'exec', function() {
+    const resolver = [].slice.call(arguments).pop();
+    resolver(null, [{attrs: testItem1}]);
+});
+
+sinon.stub(modelObj, 'query', function() {
+    return {exec: execSpy};
+});
+
+sinon.stub(modelObj, 'scan', function() {
+    return {exec: execSpy};
+});
+
+tape.test('Should have tableName', function(t) {
+    t.equal(TestModel.tableName(), 'test', 'Correct table name');
+    t.end();
+});
+
+tape.test('Should find item', function(t) {
+    TestModel.find('aaa').then(function(result) {
+        t.same(result, testItem1, 'Found item by key');
+        t.end();
+    }).catch(function(err)  {
+        t.fail(err);
         t.end();
     });
+});
 
-    tape.test('Should find item', function(t) {
-        TestModel.find('aaa').then(function(result) {
-            t.same(result, testItem1, 'Found item by key');
-            t.end();
-        }).catch(function(err)  {
-            t.fail(err);
-            t.end();
-        });
+tape.test('Should find items', function(t) {
+    TestModel.findItems(['aaa', 'bbb']).then(function(result) {
+        t.same(result, [testItem1, testItem2], 'Found items by key');
+        t.end();
+    }).catch(function(err)  {
+        t.fail(err);
+        t.end();
     });
+});
 
-    tape.test('Should find items', function(t) {
-        TestModel.findItems(['aaa', 'bbb']).then(function(result) {
-            t.same(result, [testItem1, testItem2], 'Found items by key');
-            t.end();
-        }).catch(function(err)  {
-            t.fail(err);
-            t.end();
-        });
+tape.test('Should create item', function(t) {
+    TestModel.create(testItem4).then(function(result) {
+        t.same(result, testItem4, 'Created item');
+        t.end();
+    }).catch(function(err)  {
+        t.fail(err);
+        t.end();
     });
+});
 
-    tape.test('Should query item', function(t) {
-        TestModel.query('aaa').loadAll().limit(1).exec().then(function(result) {
-            t.same(result, [testItem1], 'Found item by query');
-            t.end();
-        }).catch(function(err)  {
-            t.fail(err);
-            t.end();
-        });
+tape.test('Should update item', function(t) {
+    TestModel.update(testItemUpdate3, {ReturnValues: 'ALL_NEW'}).then(function(result) {
+        t.same(result, testItemUpdate3, 'Updated item');
+        t.end();
+    }).catch(function(err)  {
+        t.fail(err);
+        t.end();
     });
+});
 
-    tape.test('Should create item', function(t) {
-        const testItem4 = {key: 'ddd', property: 4};
-        TestModel.create(testItem4).then(function(result) {
-            t.same(result, testItem4, 'Created item');
-            t.end();
-        }).catch(function(err)  {
-            t.fail(err);
-            t.end();
-        });
+tape.test('Should delete item', function(t) {
+    TestModel.destroy('aaa', {ReturnValues: 'ALL_OLD'}).then(function(result) {
+        t.same(result, testItem1, 'Deleted item');
+        t.end();
+    }).catch(function(err)  {
+        t.fail(err);
+        t.end();
     });
+});
 
-    tape.test('Should update item', function(t) {
-        const testItemUpdate3 = {key: testItem3.key, property: 5};
-        TestModel.update(testItemUpdate3, {ReturnValues: 'ALL_NEW'}).then(function(result) {
-            t.same(result, testItemUpdate3, 'Updated item');
-            t.end();
-        }).catch(function(err)  {
-            t.fail(err);
-            t.end();
-        });
+tape.test('Should query item', function(t) {
+    TestModel.query('aaa').exec().then(function(result) {
+        t.same(result, [testItem1], 'Found item by query');
+        t.end();
+    }).catch(function(err)  {
+        t.fail(err);
+        t.end();
     });
+});
 
-    tape.test('Should delete item', function(t) {
-        TestModel.destroy('aaa', {ReturnValues: 'ALL_OLD'}).then(function(result) {
-            t.same(result, testItem1, 'Deleted item');
-            t.end();
-        }).catch(function(err)  {
-            t.fail(err);
-            t.end();
-        });
+tape.test('Should scan item', function(t) {
+    TestModel.query('aaa').exec().then(function(result) {
+        t.same(result, [testItem1], 'Found item by query');
+        t.end();
+    }).catch(function(err)  {
+        t.fail(err);
+        t.end();
     });
+});
+
+tape.test('Should call vogels methods', function(t) {
+    t.ok(createSpy.called, 'Create called');
+    t.ok(destroySpy.called, 'Destroy called');
+    t.ok(execSpy.calledTwice, 'Exec called twice');
+    t.ok(updateSpy.called, 'Update called');
+    t.ok(getSpy.called, 'Get called');
+    t.ok(getItemsSpy.called, 'GetItems called');
+    t.end();
 });
