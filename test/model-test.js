@@ -1,3 +1,5 @@
+'use strict';
+
 const joi = require('joi');
 const sinon = require('sinon');
 const vogels = require('vogels');
@@ -27,7 +29,7 @@ const updateStub = sinon.stub(modelObj, 'update', function() {
     const resolver = [].slice.call(arguments).pop();
     resolver(null, {attrs: testItem1});
 });
-const destroyStub = sinon.stub(modelObj, 'destroy', function() {
+let destroyStub = sinon.stub(modelObj, 'destroy', function() {
     const resolver = [].slice.call(arguments).pop();
     resolver(null, {attrs: testItem1});
 });
@@ -124,6 +126,26 @@ tape.test('Should scan item', function(t) {
         t.end();
     }).catch(function(err)  {
         t.fail(err);
+        t.end();
+    });
+});
+
+tape.test('Should fail with error', function(t) {
+    destroyStub.restore();
+    destroyStub = sinon.stub(modelObj, 'destroy', function() {
+        const resolver = [].slice.call(arguments).pop();
+        resolver(new Error('Something broke'), null);
+    });
+    TestModel.destroy('aaa').then(function() {
+        t.fail('Should result in error');
+        t.end();
+    }).catch(function(err)  {
+        t.same(err,
+            {
+                code: 500,
+                extra: undefined, message: '500: Something broke', name: 'LambdaError', request: undefined
+            },
+            'Caught an error');
         t.end();
     });
 });
