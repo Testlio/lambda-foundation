@@ -2,22 +2,20 @@
 
 const _ = require('lodash');
 
-const config = require('./lib/configuration');
+const configuration = require('./lib/configuration');
 const auth = require('./lib/authentication');
 const discovery = require('./lib/discovery');
 const error = require('./lib/error');
 const model = require('./lib/model');
 
-module.exports = function() {
-    // Create/read in a base HREF and resolve resources
-    const baseURL = _.trimEnd(_.get(config, 'url.base', ''), '/');
-    const resources = discovery(baseURL);
+// Create/read in a base HREF and resolve resources
+const baseURL = _.trimEnd(_.get(configuration, 'url.base', ''), '/');
+const resources = discovery(baseURL);
 
-    return {
-        authentication: auth,
-        configuration: config,
-        discovery: resources,
-        error: error,
-        model: model
-    };
-}();
+module.exports = {
+    authentication: auth,
+    configuration: configuration,
+    discovery: resources,
+    error: error,
+    model: model
+};
