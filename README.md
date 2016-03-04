@@ -228,3 +228,41 @@ function handler(event, context) {
     });
 }
 ```
+
+### Model layer
+
+Big part of any service is data, in Lambda backed microservices, that data is usually kept in DynamoDB. In order to standardise this as well as make it more convenient to use from the Lambda function, Foundation includes a separate submodule for defining and interacting with models. The model layer is largely based on [vogels](https://github.com/ryanfitz/vogels), but offers an API that uses promises, which better suit the workflow Foundation proposes.
+
+In a service, a model object/type can be defined as follows:
+
+```js
+var model = require('@testlio/lambda-foundation').model;
+var joi = require('joi');
+
+const example = model('Example', {
+    hashKey : 'guid',
+    timestamps : true,
+    schema : {
+        guid: vogels.types.uuid(),
+        type: joi.string(),
+        name: joi.string()
+    },
+    indexes: [{
+        hashKey: 'guid',
+        name: 'ExampleIndex',
+        type: 'global'
+    }]
+});
+
+module.exports = example;
+```
+
+The API mimics that of Vogels, but is promisified, thus allowing for better chaining:
+
+```js
+example.create({ guid: '111', type: 'example', name: 'Name' }).then(function(value) {
+    console.log(value.name) // outputs 'Name'
+});
+```
+
+APIs that are promisified include: `find`, `findItems`, `create`, `update`, `destroy`, `query` and `scan`. It is worth noting that the object returned from the `model()` function used above has all the same properties as a Vogels' table would, and it can be extended to fit the custom needs of the service (for example by adding a custom `findByVariable` function).
