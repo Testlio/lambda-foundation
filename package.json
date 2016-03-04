@@ -1,6 +1,6 @@
 {
   "name": "@testlio/lambda-foundation",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Common helpers for Lambda backed microservices",
   "main": "index.js",
   "scripts": {
