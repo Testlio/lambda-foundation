@@ -218,7 +218,7 @@ function handler(event, context) {
     let work = new Promise(function(resolve, reject) {
         // Check some variable on event, which if not there, should result in a 400
         if (!event.variable) {
-            return reject(new Error.error('400', 'Missing variable'));
+            return reject(new Error('400', 'Missing variable'));
         }
 
         // Everything is fine and work can continue
