@@ -13,7 +13,7 @@ tape.test('Error reporting resolves to error', function(t) {
     const code = 401;
     const message = 'A serious error happened';
 
-    const error = new Error.error(code, message);
+    const error = new Error(code, message);
 
     Error.report(error).then(function(err) {
         t.same(err, error, 'Error is resolved');
@@ -27,7 +27,7 @@ tape.test('Error sent to Raygun', function(t) {
     const expectedExtra = {'id': 123};
     const expectedRequest = {'request':'caused error'};
 
-    const expectedError = new Error.error(expectedCode, expectedMessage, expectedExtra, expectedRequest);
+    const expectedError = new Error(expectedCode, expectedMessage, expectedExtra, expectedRequest);
 
     Raygun.send = function(actualError, actualExtra, cb, actualRequest) {
         t.same(actualError, expectedError, 'Error reported to Raygun');
@@ -45,7 +45,7 @@ tape.test('Error reporting failure resolves to error', function(t) {
     const expectedCode = 401;
     const expectedMessage = 'A serious error happened';
 
-    const expectedError = new Error.error(expectedCode, expectedMessage);
+    const expectedError = new Error(expectedCode, expectedMessage);
 
     Raygun.send = {};
 
