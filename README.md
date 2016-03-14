@@ -266,3 +266,5 @@ example.create({ guid: '111', type: 'example', name: 'Name' }).then(function(val
 ```
 
 APIs that are promisified include: `find`, `findItems`, `create`, `update`, `destroy`, `query` and `scan`. It is worth noting that the object returned from the `model()` function used above has all the same properties as a Vogels' table would, and it can be extended to fit the custom needs of the service (for example by adding a custom `findByVariable` function).
+
+The model layer also automatically configures the underlying Vogels/DynamoDB connection to use the appropriate table. This uses the provided model object name along with the project name and stage to build the table name. **The model name is converted to kebab-case in the table name**.
