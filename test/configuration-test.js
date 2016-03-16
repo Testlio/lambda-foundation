@@ -6,7 +6,8 @@ const path = require('path');
 function addDefaultConfig(config) {
     config.aws = {
         stage: undefined,
-        region: undefined
+        region: undefined,
+        projectName: undefined
     };
 
     config.project = {
