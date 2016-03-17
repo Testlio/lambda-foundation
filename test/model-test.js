@@ -21,9 +21,14 @@ const modelObj = vogels.models['Test'];
 
 const queryObj = modelObj.query();
 
-const createStub = sinon.stub(modelObj, 'create', function() {
+const createStub = sinon.stub(modelObj, 'create', function(attributes) {
     const resolver = [].slice.call(arguments).pop();
-    resolver(null, {attrs: testItem1});
+
+    if (Array.isArray(attributes)) {
+        resolver(null, [{attrs: testItem1}, {attrs: testItem2}]);
+    } else {
+        resolver(null, {attrs: testItem1});
+    }
 });
 const updateStub = sinon.stub(modelObj, 'update', function() {
     const resolver = [].slice.call(arguments).pop();
@@ -83,6 +88,16 @@ tape.test('Should find items', function(t) {
 tape.test('Should create item', function(t) {
     TestModel.create(testItem1).then(function(result) {
         t.same(result, testItem1, 'Created item');
+        t.end();
+    }).catch(function(err)  {
+        t.fail(err);
+        t.end();
+    });
+});
+
+tape.test('Should create items', function(t) {
+    TestModel.create([testItem1, testItem2]).then(function(results) {
+        t.same(results, [testItem1, testItem2], 'Created item');
         t.end();
     }).catch(function(err)  {
         t.fail(err);
