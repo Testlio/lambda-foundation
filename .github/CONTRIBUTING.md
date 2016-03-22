@@ -42,4 +42,4 @@ If you wish to see/add a feature to lambda-foundation, you should also start by 
 
 When you decide to contribute by implementing any of the proposed features, do so by forking this repository, once you have completed the work, submit a Pull Request back to this repository. All Pull Requests should refer back to the issue they are addressing, Pull Requests that are not linkable/linked to an issue will likely not be merged.
 
-Pull Requests may receive feedback from the development team, proposing changes or asking further questions about the changes. Please try to respond to this feedback, as otherwise it the changes will likely not be merged.
+Pull Requests may receive feedback from the development team, proposing changes or asking further questions about the changes. Please try to respond to this feedback, as otherwise the changes will likely not be merged.
