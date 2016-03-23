@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 tape.test('Should return authorized event', function(t) {
 
-    const event = Event.authorizedEvent();
+    const event = Event.authorized();
 
     t.ok(event.authorization, 'Event has authorization defined');
 
@@ -20,7 +20,7 @@ tape.test('Should return authorized event', function(t) {
 
 tape.test('Should return authorized event with email payload', function(t) {
 
-    const event = Event.authorizedEvent('tester@testlio.com');
+    const event = Event.authorized('tester@testlio.com');
 
     t.ok(event.authorization, 'Event has authorization defined');
 
@@ -36,7 +36,7 @@ tape.test('Should return authorized event with email payload', function(t) {
 
 tape.test('Should return authorized event', function(t) {
 
-    const event = Event.authorizedEvent('tester@testlio.com', ['admin'], {property: 'property'});
+    const event = Event.authorized('tester@testlio.com', ['admin'], {property: 'property'});
 
     t.ok(event.authorization, 'Event has authorization defined');
 
@@ -52,7 +52,7 @@ tape.test('Should return authorized event', function(t) {
 
 tape.test('Should return unauthorized event', function(t) {
 
-    const event = Event.unauthorizedEvent({property: 'property'});
+    const event = Event.unauthorized({property: 'property'});
 
     t.ok(event.authorization, 'Event has authorization defined');
 
