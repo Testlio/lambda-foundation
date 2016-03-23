@@ -3,7 +3,7 @@ const tape = require('tape');
 const Event = require('../lib/test/event');
 const jwt = require('jsonwebtoken');
 
-tape.test('Should return authorized event', function(t) {
+tape.test('Should return authorized event with default secret', function(t) {
 
     const event = Event.authorized();
 
@@ -17,6 +17,23 @@ tape.test('Should return authorized event', function(t) {
     t.same(event, {authorization: event.authorization}, 'Authorized event returned');
     t.end();
 });
+
+tape.test('Should return authorized event with custom secret', function(t) {
+
+    const event = Event.secret('secret').authorized(null, null, null);
+
+    t.ok(event.authorization, 'Event has authorization defined');
+
+    try {
+        jwt.verify(event.authorization, 'secret');
+        Event.reset();
+    } catch(err) {
+        t.fail('Unable to verify token');
+    }
+    t.same(event, {authorization: event.authorization}, 'Authorized event returned');
+    t.end();
+});
+
 
 tape.test('Should return authorized event with email payload', function(t) {
 
