@@ -53,7 +53,9 @@ tape.test('Should return authorized event with email payload', function(t) {
 
 tape.test('Should return authorized event', function(t) {
 
-    const event = Event.authorized({sub: 'tester@testlio.com', scopes: ['admin']}, {property: 'property'});
+    const event = Event
+        .properties({property: 'property'})
+        .authorized({sub: 'tester@testlio.com', scopes: ['admin']});
 
     t.ok(event.authorization, 'Event has authorization defined');
 
@@ -69,7 +71,7 @@ tape.test('Should return authorized event', function(t) {
 
 tape.test('Should return authorized event with extra properties', function(t) {
 
-    const event = Event.authorized(null, {property: 'property'});
+    const event = Event.properties({property: 'property'}).authorized();
 
     t.ok(event.authorization, 'Event has authorization defined');
 
@@ -84,7 +86,7 @@ tape.test('Should return authorized event with extra properties', function(t) {
 });
 
 
-tape.test('Should return unauthorized event', function(t) {
+tape.test('Should return unauthorized event with extra properties', function(t) {
 
     const event = Event.unauthorized({property: 'property'});
 
