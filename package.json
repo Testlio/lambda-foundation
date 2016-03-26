@@ -42,7 +42,6 @@
   },
   "devDependencies": {
     "eslint": "^2.0.0",
-    "guid": "0.0.12",
     "joi": "^8.0.4",
     "sinon": "^1.17.3",
     "tap-spec": "^4.1.1",
