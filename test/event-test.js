@@ -20,7 +20,7 @@ tape.test('Should return authorized event with default secret', function(t) {
 
 tape.test('Should return authorized event with custom secret', function(t) {
 
-    const event = Event.secret('secret').authorized(null, null, null);
+    const event = Event.secret('secret').authorized();
 
     t.ok(event.authorization, 'Event has authorization defined');
 
@@ -53,7 +53,7 @@ tape.test('Should return authorized event with email payload', function(t) {
 
 tape.test('Should return authorized event', function(t) {
 
-    const event = Event.authorized('tester@testlio.com', ['admin'], {property: 'property'});
+    const event = Event.authorized({sub: 'tester@testlio.com', scopes: ['admin']}, {property: 'property'});
 
     t.ok(event.authorization, 'Event has authorization defined');
 
@@ -66,6 +66,23 @@ tape.test('Should return authorized event', function(t) {
     t.same(event, {authorization: event.authorization, property: 'property'}, 'Authorized event returned');
     t.end();
 });
+
+tape.test('Should return authorized event with extra properties', function(t) {
+
+    const event = Event.authorized(null, {property: 'property'});
+
+    t.ok(event.authorization, 'Event has authorization defined');
+
+    try {
+        const decoded = jwt.verify(event.authorization, 'default_secret');
+        t.same(decoded, {iat: decoded.iat});
+    } catch(err) {
+        t.fail('Unable to verify token');
+    }
+    t.same(event, {authorization: event.authorization, property: 'property'}, 'Authorized event returned');
+    t.end();
+});
+
 
 tape.test('Should return unauthorized event', function(t) {
 
