@@ -43,7 +43,7 @@
   "devDependencies": {
     "eslint": "^2.0.0",
     "guid": "0.0.12",
-    "joi": "^8.0.4",
+    "joi": "5.x.x",
     "sinon": "^1.17.3",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0"
