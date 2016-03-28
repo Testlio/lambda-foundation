@@ -91,37 +91,7 @@ tape.test('Should call expected test methods on context fail expected but succee
 tape.test('Should call expected test methods on context fail expected but done called', function(t) {
     stub(t);
     const mock = Context.assertFail(t, {result:"result"});
-    mock.done({result:"result"});
-
-    assertFailure();
-    restore();
-    t.end();
-});
-
-tape.test('Should call expected test methods on context done expected and called', function(t) {
-    stub(t);
-    const mock = Context.assertDone(t, {result:"result"});
-    mock.fail({result:"result"});
-
-    assertFailure();
-    restore();
-    t.end();
-});
-
-tape.test('Should call expected test methods on context done expected but succeed called', function(t) {
-    stub(t);
-    const mock = Context.assertDone(t, {result:"result"});
-    mock.succeed({result:"result"});
-
-    assertFailure();
-    restore();
-    t.end();
-});
-
-tape.test('Should call expected test methods on context done expected but fail called', function(t) {
-    stub(t);
-    const mock = Context.assertDone(t, {result:"result"});
-    mock.fail({result:"result"});
+    mock.done(null, {result:"result"});
 
     assertFailure();
     restore();
@@ -145,19 +115,7 @@ tape.test('Should call callback on fail', function(t) {
     const mock = Context.assertFail(t, {result:"result"}, function(obj) {
         t.ok(obj, 'Callback called');
     });
-    mock.fail({result:"result"});
-
-    assertSuccess(2);
-    restore();
-    t.end();
-});
-
-tape.test('Should call callback on done', function(t) {
-    stub(t);
-    const mock = Context.assertDone(t, {result:"result"}, function(obj) {
-        t.ok(obj, 'Callback called');
-    });
-    mock.done({result:"result"});
+    mock.fail(null, {result:"result"});
 
     assertSuccess(2);
     restore();

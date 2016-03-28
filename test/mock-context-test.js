@@ -46,24 +46,14 @@ tape.test('Should fail with expected error and callback provided', function(t) {
     mock.fail(new Error('999', 'Expected error'));
 });
 
-tape.test('Should call done with expected result provided', function(t) {
-    const mock = Context.assertDone(t, {result:"result"});
+tape.test('Should succeed with done called', function(t) {
+    const mock = Context.assertFail(t, new Error('999', 'Expected error'));
     t.plan(2);
-    mock.done({result:"result"});
+    mock.done(new Error('999', 'Expected error'));
 });
 
-tape.test('Should call done with expected result and callback provided', function(t) {
-    t.plan(3);
-    const mock = Context.assertDone(t, {result:"result"}, function(obj) {
-        t.same(obj, {result:"result"}, 'callback called');
-    });
-    mock.done({result:"result"});
-});
-
-tape.test('Should call done with callback provided', function(t) {
+tape.test('Should succeed with done called', function(t) {
+    const mock = Context.assertSucceed(t, {result:"result"});
     t.plan(2);
-    const mock = Context.assertDone(t, function(obj) {
-        t.same(obj, {result:"result"}, 'callback called');
-    });
-    mock.done({result:"result"});
+    mock.done(null, {result:"result"});
 });
