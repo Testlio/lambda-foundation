@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 tape.test('Should return authorized event with default secret', function(t) {
 
-    const event = Event.authorized();
+    const event = Event().authorized();
 
     t.ok(event.authorization, 'Event has authorization defined');
 
@@ -20,13 +20,12 @@ tape.test('Should return authorized event with default secret', function(t) {
 
 tape.test('Should return authorized event with custom secret', function(t) {
 
-    const event = Event.secret('secret').authorized();
+    const event = Event().authorized(null, 'secret');
 
     t.ok(event.authorization, 'Event has authorization defined');
 
     try {
         jwt.verify(event.authorization, 'secret');
-        Event.reset();
     } catch(err) {
         t.fail('Unable to verify token');
     }
@@ -37,7 +36,7 @@ tape.test('Should return authorized event with custom secret', function(t) {
 
 tape.test('Should return authorized event with email payload', function(t) {
 
-    const event = Event.authorized('tester@testlio.com');
+    const event = Event().authorized('tester@testlio.com');
 
     t.ok(event.authorization, 'Event has authorization defined');
 
@@ -53,8 +52,7 @@ tape.test('Should return authorized event with email payload', function(t) {
 
 tape.test('Should return authorized event', function(t) {
 
-    const event = Event
-        .properties({property: 'property'})
+    const event = Event({property: 'property'})
         .authorized({sub: 'tester@testlio.com', scopes: ['admin']});
 
     t.ok(event.authorization, 'Event has authorization defined');
@@ -71,7 +69,7 @@ tape.test('Should return authorized event', function(t) {
 
 tape.test('Should return authorized event with extra properties', function(t) {
 
-    const event = Event.properties({property: 'property'}).authorized();
+    const event = Event({property: 'property'}).authorized();
 
     t.ok(event.authorization, 'Event has authorization defined');
 
@@ -88,7 +86,7 @@ tape.test('Should return authorized event with extra properties', function(t) {
 
 tape.test('Should return unauthorized event with extra properties', function(t) {
 
-    const event = Event.unauthorized({property: 'property'});
+    const event = Event({property: 'property'}).unauthorized();
 
     t.ok(event.authorization, 'Event has authorization defined');
 
