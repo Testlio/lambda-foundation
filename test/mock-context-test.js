@@ -1,6 +1,6 @@
 const tape = require('tape');
 const Error = require('../lib/error');
-const Context = require('../lib/test/mock-context');
+const Context = require('../lib/test/context');
 
 tape.test('Should succeed with expected result provided', function(t) {
     const mock = Context.assertSucceed(t, {result:"result"});

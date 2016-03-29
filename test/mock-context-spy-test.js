@@ -2,7 +2,7 @@
 
 const tape = require('tape');
 const sinon = require('sinon');
-const Context = require('../lib/test/mock-context');
+const Context = require('../lib/test/context');
 
 let endStub;
 let okStub;
