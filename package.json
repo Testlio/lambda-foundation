@@ -46,5 +46,8 @@
     "joi": "^8.0.4",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0"
-  }
+    },
+    "peerDependencies": {
+        "joi": "5.x.x"
+    }
 }
