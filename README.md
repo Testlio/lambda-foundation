@@ -229,6 +229,8 @@ function handler(event, context) {
 }
 ```
 
+If the environment variable `RAYGUN_API_KEY` is set to a valid [Raygun](https://raygun.io) API key, then the errors are also reported there upon calls to `.report`. Furthermore, errors are only reported when the `NODE_ENV` environment variable is set to `production`.
+
 ### Model layer
 
 Big part of any service is data, in Lambda backed microservices, that data is usually kept in DynamoDB. In order to standardise this as well as make it more convenient to use from the Lambda function, Foundation includes a separate submodule for defining and interacting with models. The model layer is largely based on [vogels](https://github.com/ryanfitz/vogels), but offers an API that uses promises, which better suit the workflow Foundation proposes.
