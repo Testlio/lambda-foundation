@@ -5,6 +5,7 @@ const sinon = require('sinon');
 const vogels = require('vogels');
 const tape = require('tape');
 const Model = require('../lib/model');
+const LambdaError = require('../lib/error');
 
 const testItem1 = {key: 'aaa', property: 1};
 const testItem2 = {key: 'bbb', property: 2};
@@ -156,10 +157,7 @@ tape.test('Should fail with error', function(t) {
         t.end();
     }).catch(function(err)  {
         t.same(err,
-            {
-                code: 500,
-                extra: undefined, message: '500: Something broke', name: 'LambdaError', request: undefined
-            },
+            new LambdaError(500, 'Something broke'),
             'Caught an error');
         t.end();
     });

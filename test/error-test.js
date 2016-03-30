@@ -1,11 +1,11 @@
 'use strict';
 
 const tape = require('tape');
-const Error = require('../lib/error');
+const LambdaError = require('../lib/error');
 const Raygun = require('../lib/error/raygun.js');
 
 // Add a TEST tag to our errors
-Error.config({
+LambdaError.config({
     tags: ['TEST']
 });
 
@@ -13,9 +13,9 @@ tape.test('Error reporting resolves to error', function(t) {
     const code = 401;
     const message = 'A serious error happened';
 
-    const error = new Error(code, message);
+    const error = new LambdaError(code, message);
 
-    Error.report(error).then(function(err) {
+    LambdaError.report(error).then(function(err) {
         t.same(err, error, 'Error is resolved');
         t.end();
     });
@@ -27,7 +27,8 @@ tape.test('Error sent to Raygun', function(t) {
     const expectedExtra = {'id': 123};
     const expectedRequest = {'request':'caused error'};
 
-    const expectedError = new Error(expectedCode, expectedMessage, expectedExtra, expectedRequest);
+    // The error that is sent through is a native one
+    const expectedError = new Error(expectedCode + ': ' + expectedMessage);
 
     Raygun.send = function(actualError, actualExtra, cb, actualRequest) {
         t.same(actualError, expectedError, 'Error reported to Raygun');
@@ -36,7 +37,7 @@ tape.test('Error sent to Raygun', function(t) {
         cb();
     };
 
-    Error.report(expectedError).then(function() {
+    LambdaError.report(expectedError).then(function() {
         t.end();
     });
 });
@@ -45,11 +46,12 @@ tape.test('Error reporting failure resolves to error', function(t) {
     const expectedCode = 401;
     const expectedMessage = 'A serious error happened';
 
-    const expectedError = new Error(expectedCode, expectedMessage);
+    // The error that is sent through is a native one
+    const expectedError = new Error(expectedCode + ': ' + expectedMessage);
 
     Raygun.send = {};
 
-    Error.report(expectedError).then(function(actualError) {
+    LambdaError.report(expectedError).then(function(actualError) {
         t.same(actualError, expectedError, 'Error reported to Raygun');
         t.end();
     });
