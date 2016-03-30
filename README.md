@@ -311,7 +311,7 @@ Our event submodule provides a way to easily create either authorized or unautho
 
 ```js
 var tape = require('tape');
-var Event = require('@testlio/lambda-foundation').test.Event;
+var Event = require('@testlio/lambda-foundation').test.event;
 
 tape.test('Example', function(t) {
     // Creates an event object with an invalid authorization token
