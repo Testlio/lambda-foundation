@@ -17,5 +17,6 @@ module.exports = {
     configuration: configuration,
     discovery: resources,
     error: error,
-    model: model
+    model: model,
+    test: test
 };
