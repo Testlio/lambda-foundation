@@ -29,15 +29,16 @@ tape.test('Error sent to Raygun', function(t) {
 
     // The error that is sent through is a native one
     const expectedError = new Error(expectedCode + ': ' + expectedMessage);
+    const error = new LambdaError(expectedCode, expectedMessage, expectedExtra, expectedRequest);
 
     Raygun.send = function(actualError, actualExtra, cb, actualRequest) {
         t.same(actualError, expectedError, 'Error reported to Raygun');
-        t.equal(actualExtra, expectedError.extra, 'Extras reported to Raygun');
-        t.equal(actualRequest, expectedError.request, 'Request reported to Raygun');
+        t.equal(actualExtra, expectedExtra, 'Extras reported to Raygun');
+        t.equal(actualRequest, expectedRequest, 'Request reported to Raygun');
         cb();
     };
 
-    LambdaError.report(expectedError).then(function() {
+    LambdaError.report(error).then(function() {
         t.end();
     });
 });
