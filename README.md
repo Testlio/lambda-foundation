@@ -274,7 +274,7 @@ The model layer also automatically configures the underlying Vogels/DynamoDB con
 
 ### Testing
 
-Our testing module provides three main submodules described below.
+Our testing module provides four main submodules described below.
 
 #### Context
 
@@ -365,6 +365,63 @@ var test = require('@testlio/lambda-foundation').test.test;
 
 test.test('Example test group', function(sandbox, tape) {
     tape.testAuthorization(lambda, error);
+});
+```
+
+
+#### Mock model
+
+We provide a mock model for stubbing methods of model (update, find, findItems, create and destroy). You can extend it based on
+the extended model you use. It depends on [Guid](https://www.npmjs.com/package/guid) to generate hash keys for mocked data.
+
+The following example demonstrate a basic concept how to extend and use mock model in test.
+
+
+```js
+const MockModel = require('@testlio/lambda-foundation').test.model;
+
+const ExtendedModel = MockModel();
+
+const testData = [
+    {
+        guid: '0',
+        name: 'testData0'
+    },
+    {
+        guid: '1',
+        name: 'testData1'
+    }];
+
+function mockExtendedModel(_model, _sandbox, model) {
+    _sandbox.stub(_model, 'additionalFunction', function() {
+        console.log('additionalFunction call');
+        // Whatever you want
+        return Promise.resolve(result);
+    });
+}
+
+ExtendedModel.mockModel = function(_model, _sandbox) {
+    this.setData(devices);
+    this.mock(_model, _sandbox, null);
+    mockExtendedModel(_model, _sandbox, this);
+};
+
+module.exports = ExtendedModel;
+
+```
+
+```js
+var test = require('@testlio/lambda-foundation').test.test;
+var ExtendedModel = require('extendedModelClass');
+var ExtendedModelMock = require('@testlio/lambda-foundation').test.mockModel;
+
+test.test('Example test group', function(sandbox, tape) {
+
+    ExtendedModelMock.mock(ExtendedModel, sandbox);
+
+    tape.test('Example test' function(t) {
+        lambda.handler(event, context);
+    });
 });
 ```
 
