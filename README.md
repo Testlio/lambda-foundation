@@ -268,3 +268,130 @@ example.create({ guid: '111', type: 'example', name: 'Name' }).then(function(val
 APIs that are promisified include: `find`, `findItems`, `create`, `update`, `destroy`, `query` and `scan`. It is worth noting that the object returned from the `model()` function used above has all the same properties as a Vogels' table would, and it can be extended to fit the custom needs of the service (for example by adding a custom `findByVariable` function).
 
 The model layer also automatically configures the underlying Vogels/DynamoDB connection to use the appropriate table. This uses the provided model object name along with the project name and stage to build the table name. **The model name is converted to kebab-case in the table name**.
+
+
+### Testing
+
+Our testing module provides three main submodules described below.
+
+#### Context
+
+We provide a mock context for easier verification of lambda function results. Our mock context does depend on [Tape](https://www.npmjs.com/package/tape) and handles basic result assertion and test ending. Lambda is considered to have successfully executed if it terminates with either `context.succeed(result)` or `context.done(null, result)`.
+
+The following examples both demonstrate a basic test, checking whether the lambda under test finishes with the expected result.
+
+```js
+var tape = require('tape');
+var context = require('@testlio/lambda-foundation').test.context;
+
+tape.test('Example', function(t) {
+    // we expect the context to succeed with the second parameter i.e. context.succeed({ test: 'result'}) or context.done(null, { test: 'result'}) is called
+    var mockContext = context.assertSucceed(t, { test: 'result'});
+    lambda.handler(event, mockContext);
+});
+```
+
+You can also provide a callback with custom assertions:
+
+```js
+var tape = require('tape');
+var context = require('@testlio/lambda-foundation').test.context;
+
+tape.test('Example', function(t) {
+    var mockContext = context.assertFail(t, function(err) {
+        t.same(err, new Error('401', 'Unauthorized'));
+    });
+    lambda.handler(event, mockContext);
+});
+```
+
+#### Event
+
+Our event submodule provides a way to easily create either authorized or unauthorized events.
+
+```js
+var tape = require('tape');
+var Event = require('@testlio/lambda-foundation').test.Event;
+
+tape.test('Example', function(t) {
+    // Creates an event object with an invalid authorization token
+    var event = Event().unauthorized();
+    lambda.handler(event, context);
+});
+
+tape.test('Example', function(t) {
+    // Creates an event object with a valid authorization token signed with 'default_secret'
+    // and additional properties passed in the constructor
+    var event = Event({extra: 'property'}).authorized();
+    lambda.handler(event, context);
+});
+
+tape.test('Example', function(t) {
+    // Creates an event object with a valid authorization token signed with a custom secret
+    // passed as parameter
+    var event = Event().authorized('secret');
+    lambda.handler(event, context);
+});
+
+```
+
+#### Lambda test
+
+Lastly, we have the lambda-test submodule. This submodule wraps a [Tape](https://www.npmjs.com/package/tape) test group and provides you with a [Sinon](http://sinonjs.org/docs/#sandbox) sandbox for easy mocking. The submodule takes care of restoring any mocks after the test run.
+
+```js
+var test = require('@testlio/lambda-foundation').test.test;
+var customModule = require('custom');
+
+test.test('Example test group', function(sandbox, tape) {
+
+    sandbox.stub(customModule, 'method', function(result) {
+        //skip complicated logic
+        return result;
+    });
+
+    tape.test('Example test' function(t) {
+        lambda.handler(event, context);
+    });
+});
+```
+
+We also provide a basic authorization test - it creates an event with an invalid token and asserts that the lambda under test fails with the expected error (`new Error('401', 'Invalid token')` by default).   
+
+```js
+var test = require('@testlio/lambda-foundation').test.test;
+
+test.test('Example test group', function(sandbox, tape) {
+    tape.testAuthorization(lambda, error);
+});
+```
+
+
+#### All together now
+
+Thus, using our testing module, a basic lambda test would look like this:
+
+```js
+var lambdaTest = require('@testlio/lambda-foundation').test;
+var context = lambdaTest.context;
+var Event = lambdaTest.event;
+var test = lambdaTest.test;
+
+var Error = require('@testlio/lambda-foundation').error;
+var lambda = require('path/to/lambda');
+
+test.test('Example test group', function(sandbox, tape) {
+
+    tape.testAuthorization(lambda);
+
+    tape.test('Example successful context test' function(t){
+        var mockContext = context.assertSucceed(t, {test: 'result'});
+        lambda.handler(Event().authorized(), mockContext);
+    });
+
+    tape.test('Example failed context test' function(t){
+        var mockContext = context.assertFail(t, new Error('400', 'Bad request')});
+        lambda.handler(Event({parameter: 'invalid_value'}).authorized(), mockContext);
+    });
+});
+```
