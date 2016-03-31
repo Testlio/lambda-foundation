@@ -33,13 +33,27 @@ Authentication is an asynchronous process, that assumes the event contains a val
 var Auth = require('@testlio/lambda-foundation').authentication;
 
 function handler(event, context) {
-    let authPromise = Auth.authenticate(event);
+    let authPromise = Auth.authenticate(event.authorization);
 
     authPromise.then(function(jwt) {
         console.log('Hi, ' + jwt.sub);
         ...
     });
 }
+```
+
+The secret, against which the token is validated can be configured in multiple ways. By default the secret is `default_secret`, unless the environment variable `AUTH_SECRET` is set on `process.env`, in which case that value is used. Finally, the secret can be overriden in code via `auth.config()`.
+
+```js
+var Auth = require('@testlio/lambda-foundation').authentication;
+Auth.config({
+    secret: 'new_secret'
+});
+
+function handler(event, context) {
+    // code like before, now authentication is done against new_secret
+}
+
 ```
 
 The authentication submodule also includes constants for scopes and allows both authentication against a specific scope as well as offering a utility function for manually checking if a specific JWT has specific scope(s).
@@ -50,7 +64,7 @@ var Auth = require('@testlio/lambda-foundation').authentication;
 function handler(event, context) {
     // We can provide a set of scopes and a rule that the event has to satisfy
     // the rule defaults to "All", but can also be "Any" or "None"
-    let authPromise = Auth.authenticate(event, {
+    let authPromise = Auth.authenticate(event.authorization, {
         scopes: [Auth.SCOPE.CLIENT, Auth.SCOPE.ADMIN],
         rule: Auth.RULE.ANY
     });
