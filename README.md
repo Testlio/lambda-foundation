@@ -50,8 +50,8 @@ var Auth = require('@testlio/lambda-foundation').authentication;
 function handler(event, context) {
     // We can provide a set of scopes and a rule that the event has to satisfy
     // the rule defaults to "All", but can also be "Any" or "None"
-    let authPromise = Auth.authenticate(event, {
-        scopes: [Auth.SCOPE.CLIENT, Auth.SCOPE.ADMIN],
+    let authPromise = Auth.authenticate(event.authorization, {
+        scopes: ['admin', 'user'],
         rule: Auth.RULE.ANY
     });
 
@@ -60,7 +60,7 @@ function handler(event, context) {
         console.log('Hi, ' + jwt.sub);
 
         // We can check which exactly was satisfied
-        if (auth.verifyScopes(jwt, { scopes: [Auth.SCOPE.ADMIN] })) {
+        if (auth.verifyScopes(jwt, { scopes: ['admin'] })) {
             // Admin
         } else {
             // Client
