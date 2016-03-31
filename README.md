@@ -7,20 +7,20 @@ Lambda Foundation contains various shared parts that [AWS Lambda](https://aws.am
 ## Installation and Usage
 
 ```js
-npm install @testlio/lambda-foundation
+npm install lambda-foundation
 ```
 
 Then in code, you can import the entire foundation by:
 
 ```js
-var Foundation = require('@testlio/lambda-foundation');
+var Foundation = require('lambda-foundation');
 ```
 
 Notice that this package aims to be modular, allowing you direct access to the parts that are more important, for example to only get authentication, you can do either of the following:
 
 ```js
-var Auth = require('@testlio/lambda-foundation/authentication');
-var Auth = require('@testlio/lambda-foundation').authentication;
+var Auth = require('lambda-foundation/authentication');
+var Auth = require('lambda-foundation').authentication;
 ```
 
 ## Parts
@@ -30,7 +30,7 @@ var Auth = require('@testlio/lambda-foundation').authentication;
 Authentication is an asynchronous process, that assumes the event contains a value under the `authorization` key. This value could be a pure OAuth token or it could be a full header (with type prefix). The API returns a promise that fails if the context is not properly authenticated. Upon success, the promise resolves the token into its claims, which in general contain a `sub`, `exp` and `iat` keys as per the [JWT spec](http://jwt.io/introduction/).
 
 ```js
-var Auth = require('@testlio/lambda-foundation').authentication;
+var Auth = require('lambda-foundation').authentication;
 
 function handler(event, context) {
     let authPromise = Auth.authenticate(event);
@@ -45,7 +45,7 @@ function handler(event, context) {
 The authentication submodule also includes constants for scopes and allows both authentication against a specific scope as well as offering a utility function for manually checking if a specific JWT has specific scope(s).
 
 ```js
-var Auth = require('@testlio/lambda-foundation').authentication;
+var Auth = require('lambda-foundation').authentication;
 
 function handler(event, context) {
     // We can provide a set of scopes and a rule that the event has to satisfy
@@ -142,7 +142,7 @@ This results in resolved resources:
 In code these generated resources can be accessed directly:
 
 ```js
-var Discovery = require('@testlio/lambda-foundation').discovery;
+var Discovery = require('lambda-foundation').discovery;
 
 function handler(event, context) {
     var resources = Discovery.resources;
@@ -153,7 +153,7 @@ function handler(event, context) {
 Discovery also helps with resolving HREFs for use in responses. This works hand in hand with Node.js's [URL module](https://nodejs.org/api/url.html).
 
 ```js
-var Discovery = require('@testlio/lambda-foundation').discovery;
+var Discovery = require('lambda-foundation').discovery;
 var url = require('url');
 
 function handler(event, context) {
@@ -179,7 +179,7 @@ This problem could be solved in multiple ways, for example the config package co
 Configuration utilises a similar approach to the config package, leveraging files in the `config` directory. The biggest difference is in the way lambda-foundation configuration is bundled/built into a static file by browserify. As expected, configurations in the `config` directory are loaded based on the environment, with `default` used as a fallback. All environment mappings defined in `custom-environment-variables` are also loaded at initialisation time to allow bundling.
 
 ```js
-var Config = require('@testlio/lambda-foundation').configuration;
+var Config = require('lambda-foundation').configuration;
 
 function handler(event, context) {
     ...
@@ -196,7 +196,7 @@ Reporting errors from Lambda functions involves two steps, first the error has t
 The general error reporting function works as follows:
 
 ```js
-var Error = require('@testlio/lambda-foundation').error;
+var Error = require('lambda-foundation').error;
 
 function handler(event, context) {
     let work = ...// some promise
@@ -212,7 +212,7 @@ All errors that don't start with the following pattern `\\d{3}:` are assumed to 
 The error submodule also aims to provide structure for errors used in Lambda functions. This is due to the way Lambda results are interpreted by [API Gateway](https://aws.amazon.com/api-gateway/), where the error is converted into a string, that in turn gets mapped to an HTTP response. Thus, a nice pattern is to provide the suggested status code as the first part of the error message, such as `500:` or `404:`. Such error messages can be created as follows:
 
 ```js
-var Error = require('@testlio/lambda-foundation').error;
+var Error = require('lambda-foundation').error;
 
 function handler(event, context) {
     let work = new Promise(function(resolve, reject) {
@@ -238,7 +238,7 @@ Big part of any service is data, in Lambda backed microservices, that data is us
 In a service, a model object/type can be defined as follows:
 
 ```js
-var model = require('@testlio/lambda-foundation').model;
+var model = require('lambda-foundation').model;
 var joi = require('joi');
 
 const example = model('Example', {
@@ -284,7 +284,7 @@ The following examples both demonstrate a basic test, checking whether the lambd
 
 ```js
 var tape = require('tape');
-var context = require('@testlio/lambda-foundation').test.context;
+var context = require('lambda-foundation').test.context;
 
 tape.test('Example', function(t) {
     // we expect the context to succeed with the second parameter i.e. context.succeed({ test: 'result'}) or context.done(null, { test: 'result'}) is called
@@ -297,7 +297,7 @@ You can also provide a callback with custom assertions:
 
 ```js
 var tape = require('tape');
-var context = require('@testlio/lambda-foundation').test.context;
+var context = require('lambda-foundation').test.context;
 
 tape.test('Example', function(t) {
     var mockContext = context.assertFail(t, function(err) {
@@ -313,7 +313,7 @@ Our event submodule provides a way to easily create either authorized or unautho
 
 ```js
 var tape = require('tape');
-var Event = require('@testlio/lambda-foundation').test.event;
+var Event = require('lambda-foundation').test.event;
 
 tape.test('Example', function(t) {
     // Creates an event object with an invalid authorization token
@@ -342,7 +342,7 @@ tape.test('Example', function(t) {
 Lastly, we have the lambda-test submodule. This submodule wraps a [Tape](https://www.npmjs.com/package/tape) test group and provides you with a [Sinon](http://sinonjs.org/docs/#sandbox) sandbox for easy mocking. The submodule takes care of restoring any mocks after the test run.
 
 ```js
-var test = require('@testlio/lambda-foundation').test.test;
+var test = require('lambda-foundation').test.test;
 var customModule = require('custom');
 
 test.test('Example test group', function(sandbox, tape) {
@@ -361,7 +361,7 @@ test.test('Example test group', function(sandbox, tape) {
 We also provide a basic authorization test - it creates an event with an invalid token and asserts that the lambda under test fails with the expected error (`new Error('401', 'Invalid token')` by default).   
 
 ```js
-var test = require('@testlio/lambda-foundation').test.test;
+var test = require('lambda-foundation').test.test;
 
 test.test('Example test group', function(sandbox, tape) {
     tape.testAuthorization(lambda, error);
@@ -374,12 +374,12 @@ test.test('Example test group', function(sandbox, tape) {
 Thus, using our testing module, a basic lambda test would look like this:
 
 ```js
-var lambdaTest = require('@testlio/lambda-foundation').test;
+var lambdaTest = require('lambda-foundation').test;
 var context = lambdaTest.context;
 var Event = lambdaTest.event;
 var test = lambdaTest.test;
 
-var Error = require('@testlio/lambda-foundation').error;
+var Error = require('lambda-foundation').error;
 var lambda = require('path/to/lambda');
 
 test.test('Example test group', function(sandbox, tape) {

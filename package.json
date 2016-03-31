@@ -1,5 +1,5 @@
 {
-  "name": "@testlio/lambda-foundation",
+  "name": "lambda-foundation",
   "version": "2.2.4",
   "description": "Common helpers for Lambda backed microservices",
   "main": "index.js",
