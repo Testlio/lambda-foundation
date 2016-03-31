@@ -65,7 +65,6 @@ tape.test('If valid token with altered secret then return decoded token', functi
     }
 });
 
-
 tape.test('If valid token with Bearer keyword then return decoded token', function(t) {
 
     try {
