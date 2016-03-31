@@ -42,6 +42,30 @@ tape.test('If valid token then return decoded token', function(t) {
     }
 });
 
+tape.test('If valid token with altered secret then return decoded token', function(t) {
+
+    try {
+        // Change the configuration
+        auth.config({
+            secret: 'test_secret'
+        });
+
+        const decoded = auth.isValidToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.M2Qv4WWznuBexzC27F05YOQEl1mJM3_KQ19tj-OVmN4');
+
+        // Restore auth configuration
+        auth.config({
+            secret: null
+        });
+
+        t.equal(decoded.sub, 'test@test.com');
+        t.end();
+    } catch (err) {
+        t.fail('should not throw error: ' + err);
+        t.end();
+    }
+});
+
+
 tape.test('If valid token with Bearer keyword then return decoded token', function(t) {
 
     try {
