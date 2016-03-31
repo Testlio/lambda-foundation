@@ -2,6 +2,7 @@
 
 const tape = require('tape');
 const auth = require('../lib/authentication');
+const test = require('../lib/test');
 
 tape.test('If no token then return 401', function(t) {
 
@@ -50,7 +51,9 @@ tape.test('If valid token with altered secret then return decoded token', functi
             secret: 'test_secret'
         });
 
-        const decoded = auth.isValidToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.M2Qv4WWznuBexzC27F05YOQEl1mJM3_KQ19tj-OVmN4');
+        // Use the test submodule for token generation
+        const token = test.event().authorized({ sub: 'test@test.com' }, 'test_secret').authorization;
+        const decoded = auth.isValidToken(token);
 
         // Restore auth configuration
         auth.config({
