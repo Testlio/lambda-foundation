@@ -38,7 +38,6 @@
     "promiscuous": "^0.6.0",
     "raygun": "^0.8.5",
     "through2": "^2.0.1",
-    "vogels": "^2.2.0",
     "sinon": "^1.17.3",
     "tape": "^4.4.0"
   },
@@ -47,6 +46,7 @@
     "tap-spec": "^4.1.1"
   },
   "peerDependencies": {
-    "joi": "5.x.x"
+    "joi": "5.x.x",
+    "vogels": "^2.2.0"
   }
 }
