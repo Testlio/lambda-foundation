@@ -259,7 +259,7 @@ const example = model('Example', {
     hashKey : 'guid',
     timestamps : true,
     schema : {
-        guid: vogels.types.uuid(),
+        guid: model.types.uuid(),
         type: joi.string(),
         name: joi.string()
     },
