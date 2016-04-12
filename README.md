@@ -45,7 +45,7 @@ function handler(event, context) {
 The secret, against which the token is validated can be configured in multiple ways. By default the secret is `default_secret`, unless the environment variable `AUTH_SECRET` is set on `process.env`, in which case that value is used. Finally, the secret can be overriden in code via `auth.config()`.
 
 ```js
-var Auth = require('@testlio/lambda-foundation').authentication;
+var Auth = require('lambda-foundation').authentication;
 Auth.config({
     secret: 'new_secret'
 });
