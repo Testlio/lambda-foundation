@@ -197,3 +197,58 @@ tape.test('if valid token and invalid scope then false', function(t) {
         t.end();
     });
 });
+
+tape.test('If generating a token, returns a valid token', function(t) {
+    const token = auth.generateToken('test@testlio.com', 'tester');
+
+    // Validate by immediately running the same token through auth
+    const authPromise = auth.authenticate(token, {
+        scope: ['tester']
+    });
+
+    authPromise.then(function(jwt) {
+        // Validate the contents
+        t.equal(jwt.sub, 'test@testlio.com', 'Resulting token has invalid subject');
+        t.looseEqual(jwt.scope, ['tester'], 'Resulting token has invalid scope');
+        t.notOk(jwt.exp, 'Resulting token should not expire');
+        t.end();
+    }).catch(function(err) {
+        t.fail('Generated an invalid token', err);
+    });
+});
+
+tape.test('If generating a token with multiple scopes, returns a valid token', function(t) {
+    const token = auth.generateToken('test@testlio.com', ['tester', 'admin']);
+
+    // Validate by immediately running the same token through auth
+    const authPromise = auth.authenticate(token);
+
+    authPromise.then(function(jwt) {
+        // Validate the contents
+        t.equal(jwt.sub, 'test@testlio.com', 'Resulting token has invalid subject');
+        t.looseEqual(jwt.scope, ['tester', 'admin'], 'Resulting token has invalid scope');
+        t.notOk(jwt.exp, 'Resulting token should not expire');
+        t.end();
+    }).catch(function(err) {
+        t.fail('Generated an invalid token', err);
+    });
+});
+
+tape.test('If generating a token with expiration, returns a valid token', function(t) {
+    const token = auth.generateToken('test@testlio.com', 'tester', 300);
+
+    // Validate by immediately running the same token through auth
+    const authPromise = auth.authenticate(token, {
+        scope: ['tester']
+    });
+
+    authPromise.then(function(jwt) {
+        // Validate the contents
+        t.equal(jwt.sub, 'test@testlio.com', 'Resulting token has invalid subject');
+        t.looseEqual(jwt.scope, ['tester'], 'Resulting token has invalid scope');
+        t.equal(jwt.exp - jwt.iat, 300, 'Resulting token should expire in correct time');
+        t.end();
+    }).catch(function(err) {
+        t.fail('Generated an invalid token', err);
+    });
+});
