@@ -199,7 +199,7 @@ tape.test('if valid token and invalid scope then false', function(t) {
 });
 
 tape.test('If generating a token, returns a valid token', function(t) {
-    const token = auth.generateToken('test@testlio.com', 'tester');
+    const token = auth.getToken('test@testlio.com', 'tester');
 
     // Validate by immediately running the same token through auth
     const authPromise = auth.authenticate(token, {
@@ -218,7 +218,7 @@ tape.test('If generating a token, returns a valid token', function(t) {
 });
 
 tape.test('If generating a token with multiple scopes, returns a valid token', function(t) {
-    const token = auth.generateToken('test@testlio.com', ['tester', 'admin']);
+    const token = auth.getToken('test@testlio.com', ['tester', 'admin']);
 
     // Validate by immediately running the same token through auth
     const authPromise = auth.authenticate(token);
@@ -235,7 +235,7 @@ tape.test('If generating a token with multiple scopes, returns a valid token', f
 });
 
 tape.test('If generating a token with expiration, returns a valid token', function(t) {
-    const token = auth.generateToken('test@testlio.com', 'tester', 300);
+    const token = auth.getToken('test@testlio.com', 'tester', 300);
 
     // Validate by immediately running the same token through auth
     const authPromise = auth.authenticate(token, {
