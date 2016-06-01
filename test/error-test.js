@@ -62,7 +62,7 @@ tape.test('Error sent to Raygun with additional metadata', function(t) {
         cb();
     };
 
-    LambdaError.report(error, expectedAdditionalExtra).then(function() {
+    LambdaError.report(error, undefined, expectedAdditionalExtra).then(function() {
         t.end();
     });
 });
