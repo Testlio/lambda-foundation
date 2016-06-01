@@ -32,7 +32,7 @@ tape.test('Error sent to Raygun', function(t) {
     const expectedError = new Error(expectedCode + ': ' + expectedMessage);
     const error = new LambdaError(expectedCode, expectedMessage, expectedExtra, expectedRequest);
 
-    Raygun.send = function(actualError, actualExtra, cb, actualRequest) {
+    Raygun.send = function(actualError, actualExtra, cb, actualRequest, actualTags) {
         t.same(actualError, expectedError, 'Error reported to Raygun');
         t.same(actualExtra, expectedExtra, 'Extras reported to Raygun');
         t.same(actualRequest, expectedRequest, 'Request reported to Raygun');
