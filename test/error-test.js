@@ -36,6 +36,7 @@ tape.test('Error sent to Raygun', function(t) {
         t.same(actualError, expectedError, 'Error reported to Raygun');
         t.same(actualExtra, expectedExtra, 'Extras reported to Raygun');
         t.same(actualRequest, expectedRequest, 'Request reported to Raygun');
+        t.same(actualTags, ['TEST'], 'Tags reported to Raygun');
         cb();
     };
 
@@ -55,10 +56,11 @@ tape.test('Error sent to Raygun with additional metadata', function(t) {
     const expectedError = new Error(expectedCode + ': ' + expectedMessage);
     const error = new LambdaError(expectedCode, expectedMessage, expectedExtra, expectedRequest);
 
-    Raygun.send = function(actualError, actualExtra, cb, actualRequest) {
+    Raygun.send = function(actualError, actualExtra, cb, actualRequest, actualTags) {
         t.same(actualError, expectedError, 'Error reported to Raygun');
         t.same(actualExtra, _.merge(expectedAdditionalExtra, expectedExtra), 'Extras reported to Raygun');
         t.same(actualRequest, expectedRequest, 'Request reported to Raygun');
+        t.same(actualTags, ['TEST'], 'Tags reported to Raygun');
         cb();
     };
 
@@ -82,7 +84,7 @@ tape.test('Error sent to Raygun with additional tags', function(t) {
         t.same(actualError, expectedError, 'Error reported to Raygun');
         t.same(actualExtra, expectedExtra, 'Extras reported to Raygun');
         t.same(actualRequest, expectedRequest, 'Request reported to Raygun');
-        t.same(actualTags, ['TEST'].concat(expectedAdditionalTags));
+        t.same(actualTags, ['TEST'].concat(expectedAdditionalTags), 'Tags reported to Raygun');
         cb();
     };
 
