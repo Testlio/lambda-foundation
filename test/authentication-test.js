@@ -154,15 +154,27 @@ tape.test('if no unallowed roles present with None rule then return true', funct
     t.end();
 });
 
-tape.test('if valid token and valid scope then return true', function(t) {
+tape.test('if valid token and valid scope then resolve decoded token', function(t) {
 
-    const authPromise = auth.authenticate('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGVzIjpbInRlc3RlciJdfQ.MjK579tyUaxtY9FXpTktC-vssI-rOS1RNsGl8KWX9mM', {
+    const expectedDecodedToken = {
+        'sub': 'test@test.com',
+        'scope': [
+            'tester'
+        ]
+    };
+
+    const authPromise = auth.authenticate('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34', {
         scope: ['admin'],
         rule: auth.RULE.NONE
     });
 
-    t.ok(authPromise, 'true expected');
-    t.end();
+    authPromise.then(function(decodedToken) {
+        t.deepEqual(expectedDecodedToken, decodedToken, 'decoded token doesn\'t match');
+        t.end();
+    }).catch(function(err) {
+        t.fail(err.message);
+        t.end();
+    });
 });
 
 tape.test('if invalid token and valid scope then false', function(t) {
