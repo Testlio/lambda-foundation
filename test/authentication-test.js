@@ -180,7 +180,7 @@ tape.test('if valid token and valid scope then resolve decoded token', function(
 tape.test('if invalid token and valid scope then reject', function(t) {
 
     const authPromise = auth.authenticate('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34' + 'foo', {
-        scope: ['admin'],
+        scope: ['tester'],
         rule: auth.RULE.NONE
     });
 
