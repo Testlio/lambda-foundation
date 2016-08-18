@@ -57,3 +57,8 @@ tape.test('Should succeed with done called', function(t) {
     t.plan(2);
     mock.done(null, {result:"result"});
 });
+
+tape.test('Should assert that two identical vanilla errors are equal', function(t) {
+    const mock = Context.assertFail(t, new Error('Expected error'));
+    mock.fail(new Error('Expected error'));
+});
