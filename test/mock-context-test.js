@@ -62,3 +62,10 @@ tape.test('Should assert that two identical vanilla errors are equal', function(
     const mock = Context.assertFail(t, new Error('Expected error'));
     mock.fail(new Error('Expected error'));
 });
+
+tape.test('Should fail assertion if two vanilla errors are not the same', function(t) {
+    t.same = t.notSame; // inverse assertion behaviour in context to show that its assertion did fail
+    const mock = Context.assertFail(t, new Error('Expected error'));
+    // mock is set to fail with error of different message and type, meaning that similarity assertion by Context should fail
+    mock.fail(new RangeError('Unexpected error'));
+});
