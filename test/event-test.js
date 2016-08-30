@@ -2,6 +2,7 @@
 const tape = require('tape');
 const Event = require('../lib/test/event');
 const jwt = require('jsonwebtoken');
+const auth = require('../lib/authentication');
 
 tape.test('Should return authorized event with default secret', function(t) {
 
@@ -10,7 +11,7 @@ tape.test('Should return authorized event with default secret', function(t) {
     t.ok(event.authorization, 'Event has authorization defined');
 
     try {
-        jwt.verify(event.authorization, 'default_secret');
+        auth.isValidToken(event.authorization);
     } catch(err) {
         t.fail('Unable to verify token');
     }
@@ -20,16 +21,20 @@ tape.test('Should return authorized event with default secret', function(t) {
 
 tape.test('Should return authorized event with custom secret', function(t) {
 
-    const event = Event().authorized(null, 'secret');
+    const testSecret = 'some-secret';
+    
+    const event = Event().authorized(null, testSecret);
 
     t.ok(event.authorization, 'Event has authorization defined');
 
     try {
-        jwt.verify(event.authorization, 'secret');
+        auth.config({ secret: testSecret });
+        auth.isValidToken(event.authorization);
     } catch(err) {
         t.fail('Unable to verify token');
     }
     t.same(event, {authorization: event.authorization}, 'Authorized event returned');
+    auth.config({ secret: undefined }); // teardown because following tests use `default_secret`
     t.end();
 });
 
@@ -41,7 +46,7 @@ tape.test('Should return authorized event with email payload', function(t) {
     t.ok(event.authorization, 'Event has authorization defined');
 
     try {
-        const decoded = jwt.verify(event.authorization, 'default_secret');
+        const decoded = auth.isValidToken(event.authorization);
         t.same(decoded, {iat: decoded.iat, sub: 'tester@testlio.com'});
     } catch(err) {
         t.fail('Unable to verify token');
@@ -58,7 +63,7 @@ tape.test('Should return authorized event', function(t) {
     t.ok(event.authorization, 'Event has authorization defined');
 
     try {
-        const decoded = jwt.verify(event.authorization, 'default_secret');
+        const decoded = auth.isValidToken(event.authorization);
         t.same(decoded, {iat: decoded.iat, sub: 'tester@testlio.com', scopes: ['admin']});
     } catch(err) {
         t.fail('Unable to verify token');
@@ -74,7 +79,7 @@ tape.test('Should return authorized event with extra properties', function(t) {
     t.ok(event.authorization, 'Event has authorization defined');
 
     try {
-        const decoded = jwt.verify(event.authorization, 'default_secret');
+        const decoded = auth.isValidToken(event.authorization);
         t.same(decoded, {iat: decoded.iat});
     } catch(err) {
         t.fail('Unable to verify token');
