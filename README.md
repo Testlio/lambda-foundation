@@ -90,6 +90,8 @@ function handler(event, context) {
 
 _Note:_ The errors thrown by authentication start with either `401:` or `403:`, depending on the reason (not matching scope vs having an invalid token). This means the AWS Lambda function results in a string that matches the regex `4\\d{2}:.*`
 
+The authentication submodule also allows generating JWT tokens with the configured settings. This is meant to be used as a means for generating a temporary token that can be used by the service for communication with another service. This should not be used as the main means for generating tokens distributed to users. In general it is preferable to pass along the token that was received from the user, but in cases where there is no end-user (such as a periodic task), this functionality allows creating a token for service-to-service requests.
+
 ### Service Discovery
 
 At the root of every microservice should be a discovery method for publicly accessible resources. Generally the structure of this discovery response is very similar between various services, which the Foundation aims to simplify. Furthermore, all services also rely on similar code for resolving/completing the HREFs present in the responses.
