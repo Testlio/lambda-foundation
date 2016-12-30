@@ -1,5 +1,5 @@
 const tape = require('tape');
-const Error = require('../lib/error');
+const FoundationError = require('../lib/error');
 const Context = require('../lib/test/context');
 
 tape.test('Should succeed with expected result provided', function(t) {
@@ -25,35 +25,47 @@ tape.test('Should succeed with callback provided', function(t) {
 });
 
 tape.test('Should fail with expected error provided', function(t) {
-    const mock = Context.assertFail(t, new Error('999', 'Expected error'));
+    const mock = Context.assertFail(t, new FoundationError('999', 'Expected error'));
     t.plan(2);
-    mock.fail(new Error('999', 'Expected error'));
+    mock.fail(new FoundationError('999', 'Expected error'));
 });
 
 tape.test('Should fail with expected error and callback provided', function(t) {
-    const mock = Context.assertFail(t, new Error('999', 'Expected error'), function(error) {
-        t.same(error, new Error('999', 'Expected error'), 'Callback called');
+    const mock = Context.assertFail(t, new FoundationError('999', 'Expected error'), function(error) {
+        t.same(error, new FoundationError('999', 'Expected error'), 'Callback called');
     });
     t.plan(3);
-    mock.fail(new Error('999', 'Expected error'));
+    mock.fail(new FoundationError('999', 'Expected error'));
 });
 
 tape.test('Should fail with expected error and callback provided', function(t) {
     const mock = Context.assertFail(t, function(error) {
-        t.same(error, new Error('999', 'Expected error'), 'Callback called');
+        t.same(error, new FoundationError('999', 'Expected error'), 'Callback called');
     });
     t.plan(2);
-    mock.fail(new Error('999', 'Expected error'));
+    mock.fail(new FoundationError('999', 'Expected error'));
 });
 
 tape.test('Should succeed with done called', function(t) {
-    const mock = Context.assertFail(t, new Error('999', 'Expected error'));
+    const mock = Context.assertFail(t, new FoundationError('999', 'Expected error'));
     t.plan(2);
-    mock.done(new Error('999', 'Expected error'));
+    mock.done(new FoundationError('999', 'Expected error'));
 });
 
 tape.test('Should succeed with done called', function(t) {
     const mock = Context.assertSucceed(t, {result:"result"});
     t.plan(2);
     mock.done(null, {result:"result"});
+});
+
+tape.test('Should assert that two identical vanilla errors are equal', function(t) {
+    const mock = Context.assertFail(t, new Error('Expected error'));
+    mock.fail(new Error('Expected error'));
+});
+
+tape.test('Should fail assertion if two vanilla errors are not the same', function(t) {
+    t.same = t.notSame; // inverse assertion behaviour in context to show that its assertion did fail
+    const mock = Context.assertFail(t, new Error('Expected error'));
+    // mock is set to fail with error of different message and type, meaning that similarity assertion by Context should fail
+    mock.fail(new RangeError('Unexpected error'));
 });
