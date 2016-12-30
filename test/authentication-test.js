@@ -209,3 +209,15 @@ tape.test('if valid token and invalid scope then reject', function(t) {
         t.end();
     });
 });
+
+tape.test('if Bearer prefix is missing then reject', function(t) {
+    try {
+        auth.isValidToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34');
+
+        t.fail('didn\'t throw error');
+        t.end();
+    } catch (err) {
+        t.equal(err.code, '401');
+        t.end();
+    }
+})
