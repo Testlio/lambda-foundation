@@ -220,4 +220,4 @@ tape.test('if Bearer prefix is missing then reject', function(t) {
         t.equal(err.code, '401');
         t.end();
     }
-})
+});
