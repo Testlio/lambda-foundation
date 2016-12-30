@@ -34,7 +34,7 @@ tape.test('If invalid token then return 401', function(t) {
 tape.test('If valid token then return decoded token', function(t) {
 
     try {
-        const decoded = auth.isValidToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34');
+        const decoded = auth.isValidToken('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34');
         t.equal(decoded.sub, 'test@test.com');
         t.end();
     } catch (err) {
@@ -71,7 +71,7 @@ tape.test('If valid token with altered secret then return decoded token', functi
 tape.test('If valid token with Bearer keyword then return decoded token', function(t) {
 
     try {
-        const decoded = auth.isValidToken('Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34');
+        const decoded = auth.isValidToken('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34');
         t.equal(decoded.sub, 'test@test.com');
         t.end();
     } catch (err) {
@@ -163,7 +163,7 @@ tape.test('if valid token and valid scope then resolve decoded token', function(
         ]
     };
 
-    const authPromise = auth.authenticate('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34', {
+    const authPromise = auth.authenticate('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34', {
         scope: ['admin'],
         rule: auth.RULE.NONE
     });
@@ -179,7 +179,7 @@ tape.test('if valid token and valid scope then resolve decoded token', function(
 
 tape.test('if invalid token and valid scope then reject', function(t) {
 
-    const authPromise = auth.authenticate('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34' + 'foo', {
+    const authPromise = auth.authenticate('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34' + 'foo', {
         scope: ['tester'],
         rule: auth.RULE.NONE
     });
@@ -196,7 +196,7 @@ tape.test('if invalid token and valid scope then reject', function(t) {
 
 tape.test('if valid token and invalid scope then reject', function(t) {
 
-    const authPromise = auth.authenticate('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34', {
+    const authPromise = auth.authenticate('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34', {
         scope: ['admin']
     });
 
@@ -208,4 +208,16 @@ tape.test('if valid token and invalid scope then reject', function(t) {
         t.equal(err.code, '403');
         t.end();
     });
+});
+
+tape.test('if Bearer prefix is missing then reject', function(t) {
+    try {
+        auth.isValidToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwic2NvcGUiOlsidGVzdGVyIl19.ZzBZRdxQHFemCW2TwwFRn8Jk-uWt-OLtsi6O5pWpM34');
+
+        t.fail('didn\'t throw error');
+        t.end();
+    } catch (err) {
+        t.equal(err.code, '401');
+        t.end();
+    }
 });
