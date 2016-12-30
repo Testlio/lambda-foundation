@@ -27,7 +27,7 @@ var Auth = require('lambda-foundation').authentication;
 
 ### Authentication
 
-Authentication is an asynchronous process, that assumes the event contains a value under the `authorization` key. This value could be a pure OAuth token or it could be a full header (with type prefix). The API returns a promise that fails if the context is not properly authenticated. Upon success, the promise resolves the token into its claims, which in general contain a `sub`, `exp` and `iat` keys as per the [JWT spec](http://jwt.io/introduction/).
+Authentication is an asynchronous process, that assumes the event contains a value under the `authorization` key. This value must be an OAuth Bearer token, as defined in [RFC 6750](https://tools.ietf.org/html/rfc6750). The API returns a promise that fails if the context is not properly authenticated. Upon success, the promise resolves the token into its claims, which in general contain a `sub`, `exp` and `iat` keys as per the [JWT spec](http://jwt.io/introduction/).
 
 ```js
 var Auth = require('lambda-foundation').authentication;
