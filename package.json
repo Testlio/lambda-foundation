@@ -36,7 +36,7 @@
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.3.0",
     "promiscuous": "^0.6.0",
-    "raygun": "^0.8.5",
+    "raygun": "^0.14.0",
     "through2": "^2.0.1",
     "sinon": "^1.17.3",
     "tape": "^4.4.0",
