@@ -1,6 +1,6 @@
 {
   "name": "lambda-foundation",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Common helpers for Lambda backed microservices",
   "main": "index.js",
   "scripts": {
