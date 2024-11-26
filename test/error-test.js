@@ -31,8 +31,7 @@ tape.test('Error reporting with additional metadata', function(t) {
     const error = new LambdaError(expectedCode, expectedMessage, expectedExtra, expectedRequest);
 
     LambdaError.report(error, undefined, expectedAdditionalExtra).then(function(err) {
-        const mergedExtra = _.merge({}, expectedExtra, expectedAdditionalExtra);
-        t.same(err.extra, mergedExtra, 'Extra metadata merged correctly');
+        t.same(err.extra, _.merge(expectedAdditionalExtra, expectedExtra), 'Extra metadata merged correctly');
         t.same(err.request, expectedRequest, 'Request data preserved');
         t.end();
     });
