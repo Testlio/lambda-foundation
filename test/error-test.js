@@ -2,7 +2,6 @@
 
 const tape = require('tape');
 const LambdaError = require('../lib/error');
-const _ = require('lodash');
 
 // Add a TEST tag to our errors
 LambdaError.config({
@@ -31,7 +30,7 @@ tape.test('Error reporting with additional metadata', function(t) {
     const error = new LambdaError(expectedCode, expectedMessage, expectedExtra, expectedRequest);
 
     LambdaError.report(error, undefined, expectedAdditionalExtra).then(function(err) {
-        t.same(err.extra, _.merge(expectedAdditionalExtra, expectedExtra), 'Extra metadata merged correctly');
+        t.same(err.extra, expectedExtra, 'Extra metadata set correctly');
         t.same(err.request, expectedRequest, 'Request data preserved');
         t.end();
     });
